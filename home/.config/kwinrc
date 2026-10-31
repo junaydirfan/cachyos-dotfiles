@@ -24,9 +24,6 @@ wobblywindowsEnabled=true
 [TabBox]
 LayoutName=big_icons
 
-[Xwayland]
-Scale=1.5
-
 [org.kde.kdecoration2]
 BorderSize=None
 BorderSizeAuto=false

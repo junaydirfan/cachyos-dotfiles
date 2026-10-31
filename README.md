@@ -3,7 +3,10 @@
 My CachyOS desktop: KDE Plasma 6 on Wayland, with the Layan theme, YAMIS icons and WhiteSur cursors. It includes configs,
 package lists, and an installer that backs up anything it replaces.
 
-Built on a Lenovo Legion Pro 7 (i9-14900HX, RTX 4080 Max-Q) with fish, Limine and btrfs.
+It's made to work on any PC running CachyOS with KDE Plasma: desktop or laptop, with Intel or AMD processors and Intel,
+AMD or NVIDIA graphics. Coming from Windows? Start with [this short guide](docs/coming-from-windows.md).
+
+I built it on a Lenovo Legion Pro 7 with fish, Limine and btrfs, but you don't need any of that hardware.
 
 ## Quick start
 
@@ -37,16 +40,19 @@ Log out and back in when it finishes.
 | `--themes` | Fetches themes, icons, cursors and widgets from their authors. See `themes/sources.tsv`. |
 | `--dotfiles` | Copies `home/` into your home folder: Plasma, KWin, shortcuts, fish, Alacritty, fastfetch, Zed, micro, cava. |
 | `--plasma` | Applies the panel and widget layout, then restarts the Plasma shell. |
-| `--hardware` | Legion Pro 7 packages and udev rules. Never part of `--all`. See [the hardware notes](hardware/legion-pro-7/README.md). |
+| `--hardware` | Detects your PC and offers matching GPU packages and device extras. Never part of `--all`. See [hardware support](hardware/README.md). |
+| `--detect` | Shows the CPU, GPUs, monitors and PC type it found, then exits. |
 | `--all` | Everything except `--hardware`. |
 | `--dry-run` | Shows what would happen. |
 
 ## Before you run it
 
 - Anything replaced is backed up to `~/.local/state/cachyos-dotfiles/`, and the installer prints the restore command.
-- The panel layout was made for three monitors and 150% scaling.
+- You need CachyOS with KDE Plasma. Other Arch-based systems will mostly work, but not the gaming packages or fish config.
+- The panel layout fits itself to one, two or three or more monitors. Your own display scaling is kept.
 - Wallpapers, the weather location and the Helvetica UI font aren't included.
-- Tested on my own machine, not yet on a clean install. Please open an issue if something breaks.
+- Tested on my own Intel and NVIDIA laptop. AMD, Intel-only and desktop detection were tested with simulated hardware,
+  not real PCs, and nothing has run on a clean install yet. Please open an issue if something breaks.
 
 More help is in [troubleshooting](docs/troubleshooting.md).
 
