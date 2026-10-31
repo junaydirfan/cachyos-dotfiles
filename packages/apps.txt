@@ -1,0 +1,12 @@
+alacritty
+brave-bin
+btop
+cava
+discord
+fastfetch
+firefox
+meld
+micro
+obsidian
+openrgb
+ripgrep

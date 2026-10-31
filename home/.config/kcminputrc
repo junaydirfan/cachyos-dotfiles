@@ -1,0 +1,12 @@
+[Libinput][1008][3214][HP, Inc HyperX Alloy Origins 60 Mouse]
+PointerAcceleration=0.000
+
+[Libinput][1267][12926][ELAN06FA:00 04F3:327E Mouse]
+PointerAcceleration=0.000
+
+[Libinput][1267][12926][ELAN06FA:00 04F3:327E Touchpad]
+NaturalScroll=true
+PointerAcceleration=0.400
+
+[Mouse]
+cursorTheme=WhiteSur-cursors

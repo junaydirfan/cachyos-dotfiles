@@ -1,0 +1,7 @@
+com.bambulab.BambuStudio
+com.ktechpit.whatsie
+com.rustdesk.RustDesk
+com.spotify.Client
+com.stremio.Stremio
+io.github.cosmic_utils.camera
+org.localsend.localsend_app

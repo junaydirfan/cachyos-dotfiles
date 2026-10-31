@@ -1,0 +1,5 @@
+lenovolegionlinux
+lenovolegionlinux-dkms
+nvidia-prime
+nvidia-settings
+switcheroo-control

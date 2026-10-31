@@ -1,0 +1,14 @@
+# name	kind	url	subpath	target
+# kind "dir" copies subpath to target (relative to $HOME). kind "plasmoid" installs subpath with kpackagetool6.
+Layan Plasma theme	dir	https://github.com/vinceliuice/Layan-kde	plasma/desktoptheme/Layan	.local/share/plasma/desktoptheme/Layan
+Layan Plasma theme shared files	dir	https://github.com/vinceliuice/Layan-kde	plasma/desktoptheme/common	.local/share/plasma/desktoptheme/Layan
+Layan window decoration	dir	https://github.com/vinceliuice/Layan-kde	aurorae/themes/Layan	.local/share/aurorae/themes/Layan
+Layan colors	dir	https://github.com/vinceliuice/Layan-kde	color-schemes	.local/share/color-schemes
+YAMIS icons	dir	https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set	.	.local/share/icons/YAMIS
+WhiteSur cursors	dir	https://github.com/vinceliuice/WhiteSur-cursors	dist	.local/share/icons/WhiteSur-cursors
+ClearClock	plasmoid	https://github.com/qewer33/ClearClock	package	
+KVitals	plasmoid	https://github.com/yassine20011/kvitals	.	
+PlasMusic Toolbar	plasmoid	https://github.com/ccatterina/plasmusic-toolbar	src	
+Nothing Media	plasmoid	https://github.com/jaxparrow07/nothing-kde-widgets	packages/media	
+Panel Colorizer	plasmoid	https://github.com/luisbocanegra/plasma-panel-colorizer	package	
+Audio Visualizer	plasmoid	https://github.com/luisbocanegra/plasma-audio-visualizer	package	
