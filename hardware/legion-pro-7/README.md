@@ -2,8 +2,8 @@
 
 These are specific to this laptop (i9-14900HX, RTX 4080 Max-Q) and to my peripherals. Skip whatever doesn't apply.
 
-`./install.sh --hardware` installs the Legion packages and offers the udev rules. Everything below that touches boot is
-manual on purpose, because a typo can stop your system from booting.
+`./install.sh --hardware` offers the Legion packages on these laptops. Everything below that touches boot is manual on
+purpose, because a typo can stop your system from booting.
 
 ## Legion controls
 `lenovolegionlinux` and `lenovolegionlinux-dkms` provide the Legion kernel module, fan and power controls, and a GUI.
@@ -37,9 +37,3 @@ EDID contains the monitor's serial number, so mine isn't in this repo.
    ```
    `drm.edid_firmware` uses the saved file. `video=DP-3:e` forces the connector on.
 4. Rebuild with `sudo limine-mkinitcpio` and reboot. Keep a snapshot or fallback entry available.
-
-## Peripheral udev rules
-These give the logged-in user access to the device without root:
-
-- `70-audeze-maxwell.rules`: Audeze Maxwell and Maxwell 2. See https://github.com/junaydirfan/audezeforlinux
-- `70-epomaker-th99pro.rules`: EPOMAKER TH99 Pro, wired.

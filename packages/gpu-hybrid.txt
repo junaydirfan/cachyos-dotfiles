@@ -1,0 +1,2 @@
+nvidia-prime
+switcheroo-control

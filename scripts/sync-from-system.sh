@@ -46,6 +46,11 @@ copy .config/cava/shaders
 # Desktop IDs and tiling layouts are per-machine UUIDs.
 drop_section '[Tiling]' "$dest/.config/kwinrc"
 sed -i -E '/^Id_[0-9]+=/d; /^XwaylandEisNoPromptApps=/d' "$dest/.config/kwinrc"
+# Scaling belongs to the display, so let each PC keep its own.
+drop_section '[Xwayland]' "$dest/.config/kwinrc"
+sed -i '/^gtk-xft-dpi=/d' "$dest/.config/gtk-3.0/settings.ini" "$dest/.config/gtk-4.0/settings.ini"
+# These sections are per input device: this laptop's touchpad, my keyboard and mouse.
+drop_section '[Libinput]' "$dest/.config/kcminputrc"
 # Wallpaper history holds personal paths.
 drop_section '[Wallpapers]' "$dest/.config/plasmarc"
 # File dialog history, if any was saved.
