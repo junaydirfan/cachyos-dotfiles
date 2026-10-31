@@ -1,0 +1,6 @@
+cachyos-gaming-applications
+cachyos-gaming-meta
+protonup-qt
+waydroid
+wine
+winetricks

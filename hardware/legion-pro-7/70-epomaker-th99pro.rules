@@ -1,0 +1,5 @@
+# EPOMAKER TH99 Pro (Sonix 0c45:800a, wired) — non-root access for the active seat user.
+# Install: sudo install -m644 70-epomaker-th99pro.rules /etc/udev/rules.d/
+#          sudo udevadm control --reload && sudo udevadm trigger
+# Note: 0c45 is a shared Sonix VID; the PID match keeps this scoped to this keyboard.
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0c45", ATTRS{idProduct}=="800a", MODE="0660", TAG+="uaccess"

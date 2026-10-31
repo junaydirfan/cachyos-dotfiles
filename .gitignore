@@ -1,0 +1,4 @@
+# Machine-local list of extra strings for scripts/check-secrets.sh
+.secrets-local
+*.bak
+*.log

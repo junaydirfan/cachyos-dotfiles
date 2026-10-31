@@ -1,0 +1,6 @@
+code
+docker
+docker-compose
+dotnet-sdk
+git
+rustup
