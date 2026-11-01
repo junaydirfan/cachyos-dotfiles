@@ -81,6 +81,17 @@ For example, to copy just the terminal and shell configs:
 
 More help is in [troubleshooting](docs/troubleshooting.md).
 
+## Discord voice widget
+
+A desktop widget shows the voice channel you're in, who's there, who's speaking, and who's muted, without opening Discord.
+`--themes` installs the widget. To connect it, run this and follow the prompts. It asks for a free Discord app of your own:
+
+```bash
+widgets/discord-voice/setup.sh
+```
+
+Your Discord app's secret stays in `~/.config/discord-voice-widget/config.json`, which is never synced.
+
 ## Keeping the repo up to date
 
 To capture this PC's settings and push them now:

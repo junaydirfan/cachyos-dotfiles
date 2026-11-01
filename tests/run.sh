@@ -173,6 +173,7 @@ check "placeholders are filled in" bash -c "! grep -q '@HOME@\|@ACTIVITY@\|@ONE@
 check "shortcuts for missing apps are dropped" bash -c "! grep -q 'com.spotify.Client' '$work/amd/home/$file'"
 check "the file manager shortcut stays" grep -q 'preferred://filemanager' "$work/amd/home/$file"
 check "Plasma is restarted" has amd start
+check "the lock screen matches a shipped wallpaper" test -f "$(sed -n 's#^Image=file://##p' "$work/amd/home/.config/kscreenlockerrc" | head -n1)"
 check "exactly three wallpapers ship" test "$(find "$repo/wallpapers" -type f | wc -l)" -eq 3
 check "wallpapers are installed" test "$(find "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles" -type f | wc -l)" -eq 3
 for image in $(sed -n 's#^Image=file://##p' "$work/amd/home/$file"); do
@@ -184,6 +185,10 @@ check "undo stops Plasma before restoring the layout" has amd quit
 check "undo restores the layout" test ! -e "$work/amd/home/$file"
 check "undo restarts Plasma" has amd start
 check "undo removes the wallpapers" test ! -e "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles"
+
+# Discord voice
+check "the voice bridge follows a call" python3 -I "$repo/tests/discord_voice_test.py"
+check "the voice widget has no Plasma-only types the shell lacks" bash -c "! grep -q 'Kirigami.Avatar' '$repo/widgets/discord-voice/package/contents/ui/main.qml'"
 
 # Sidebar fix
 qml="$work/nvidia/usr/share/plasma/shells/org.kde.plasma.desktop/contents/views/Desktop.qml"

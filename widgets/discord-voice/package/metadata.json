@@ -1,0 +1,13 @@
+{
+    "KPlugin": {
+        "Id": "org.cachyos.discordvoice",
+        "Name": "Discord Voice",
+        "Description": "Shows who's in your current Discord voice channel",
+        "Icon": "discord",
+        "Category": "Online Services",
+        "Version": "1.0",
+        "License": "MIT"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
