@@ -40,7 +40,7 @@ Log out and back in when it finishes.
 | `--themes` | Fetches themes, icons, cursors and widgets from their authors. See `themes/sources.tsv`. |
 | `--dotfiles` | Copies configs into your home folder, asking about each part. |
 | `--only LIST` | Copies just the parts you name, with no prompts. See below. |
-| `--plasma` | Applies the panel and widget layout, then restarts the Plasma shell. |
+| `--plasma` | Applies the panel and widget layout and the three wallpapers, then restarts the Plasma shell. |
 | `--hardware` | Detects your PC and offers matching GPU packages and device extras. Never part of `--all`. See [hardware support](hardware/README.md). |
 | `--undo` | Puts back what the most recent run changed. |
 | `--detect` | Shows the CPU, GPUs, monitors and PC type it found, then exits. |
@@ -74,7 +74,7 @@ For example, to copy just the terminal and shell configs:
 - Themes and widgets are pinned to versions in `themes/sources.tsv`, so an upstream change can't alter what you install.
 - You need CachyOS with KDE Plasma. Other Arch-based systems will mostly work, but not the gaming packages or fish config.
 - The panel layout fits itself to one, two or three or more monitors. Your own display scaling is kept.
-- Wallpapers and the weather location aren't included. Helvetica isn't either, so you get Noto Sans unless you have it.
+- The weather location isn't included. Helvetica isn't either, so you get Noto Sans unless you have it.
 - Tested on my own Intel and NVIDIA laptop, with the panel layout also run in a separate Plasma session. AMD, Intel-only
   and desktop PCs are covered by simulated tests (`tests/run.sh`), not real hardware, and nothing has run on a clean
   install yet. Please open an issue with the output of `./install.sh --detect` if something breaks.
@@ -86,6 +86,7 @@ More help is in [troubleshooting](docs/troubleshooting.md).
 Themes and widgets belong to their authors and keep their own licenses:
 
 - [Layan](https://github.com/vinceliuice/Layan-kde) and [WhiteSur cursors](https://github.com/vinceliuice/WhiteSur-cursors) by vinceliuice
+- Wallpapers are photos from [Pexels](https://www.pexels.com/license/) by Sonny and Seven Storm Photography, and aren't covered by this repo's MIT license
 - [YAMIS](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) by dirn
 - [ClearClock](https://github.com/qewer33/ClearClock), [KVitals](https://github.com/yassine20011/kvitals),
   [PlasMusic Toolbar](https://github.com/ccatterina/plasmusic-toolbar), [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),

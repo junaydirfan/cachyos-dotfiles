@@ -22,8 +22,6 @@ ship a compiled plugin that the installer doesn't build. If a feature is missing
 **The font looks different.** The UI font is Helvetica, a commercial font that isn't included. Without it you get Noto
 Sans. Choose another in System Settings under Text & Fonts.
 
-**The wallpaper changed to the default.** Wallpapers aren't included. Set your own.
-
 **Graphics feel slow, or games won't start.** Run `./install.sh --detect` to check your GPU was found, then run
 `sudo chwd -a` to set up the driver on CachyOS.
 

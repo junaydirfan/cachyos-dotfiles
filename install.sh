@@ -335,7 +335,7 @@ missing_widgets() {
 install_plasma() {
     local rel=".config/plasma-org.kde.plasma.desktop-appletsrc" rendered activity="" missing
     say "Fitting the layout to $screens monitor(s)"
-    warn "Wallpapers and the weather location are not included. Set your own afterwards."
+    warn "The weather location isn't included. Set your own afterwards."
     missing="$(missing_widgets)"
     if [ -n "$missing" ] && [ "$dry_run" -eq 0 ]; then
         warn "these widgets aren't installed yet, run --themes first: $missing"
@@ -352,6 +352,10 @@ install_plasma() {
     # Bring the shell back even if something below fails.
     trap 'kstart plasmashell >/dev/null 2>&1 || true' EXIT
     run kquitapp6 plasmashell || true
+    local image
+    for image in "$repo"/wallpapers/*; do
+        place "$image" ".local/share/wallpapers/cachyos-dotfiles/${image##*/}"
+    done
     place "$rendered" "$rel"
     trap - EXIT
     run kstart plasmashell || failed "couldn't restart Plasma, log out and back in"

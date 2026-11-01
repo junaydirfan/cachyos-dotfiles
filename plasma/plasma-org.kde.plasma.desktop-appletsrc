@@ -28,11 +28,12 @@ lastResolution=1707x1067
 sortMode=-1
 
 [Containments][650][Wallpaper][org.kde.image][General]
+Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sonny-10960519.jpg
 SlidePaths=@HOME@/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][651]
-ItemGeometries-1920x1080=Applet-804:0,304,1920,144,0;Applet-803:672,448,640,64,0;Applet-814:832,144,320,144,0;Applet-817:720,512,560,64,0;Applet-813:880,592,256,240,0;Applet-816:1616,0,64,64,0;
-ItemGeometriesHorizontal=Applet-804:0,304,1920,144,0;Applet-803:672,448,640,64,0;Applet-814:832,144,320,144,0;Applet-817:720,512,560,64,0;Applet-813:880,592,256,240,0;Applet-816:1616,0,64,64,0;
+ItemGeometries-1920x1080=Applet-804:0,304,1920,144,0;Applet-803:672,448,640,64,0;Applet-817:720,512,560,64,0;Applet-813:880,592,256,240,0;Applet-816:976,0,64,64,0;Applet-814:1328,32,592,256,0;
+ItemGeometriesHorizontal=Applet-804:0,304,1920,144,0;Applet-803:672,448,640,64,0;Applet-817:720,512,560,64,0;Applet-813:880,592,256,240,0;Applet-816:976,0,64,64,0;Applet-814:1328,32,592,256,0;
 activityId=@ACTIVITY@
 formfactor=0
 immutability=1
@@ -94,10 +95,11 @@ immutability=1
 plugin=org.kde.plasma.clearclock
 
 [Containments][651][Applets][814][Configuration][Appearance]
-clockFontSize=110
+clockFontFamily=Helvetica
+clockFontSize=206
 dateFontSize=12
 dayFontColor=78,78,78
-dayFontSize=50
+dayFontSize=85
 dayShadowEnabled=true
 
 [Containments][651][Applets][814][Configuration][ConfigDialog]
@@ -136,6 +138,7 @@ DialogWidth=810
 previews=false
 
 [Containments][651][Wallpaper][org.kde.image][General]
+Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sevenstormphotography-1146030.jpg
 SlidePaths=@HOME@/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][652]
@@ -154,6 +157,7 @@ DialogHeight=630
 DialogWidth=810
 
 [Containments][652][Wallpaper][org.kde.image][General]
+Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sevenstormphotography-569804.jpg
 SlidePaths=@HOME@/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][778]

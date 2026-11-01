@@ -151,11 +151,17 @@ check "placeholders are filled in" bash -c "! grep -q '@HOME@\|@ACTIVITY@\|@ONE@
 check "shortcuts for missing apps are dropped" bash -c "! grep -q 'com.spotify.Client' '$work/amd/home/$file'"
 check "the file manager shortcut stays" grep -q 'preferred://filemanager' "$work/amd/home/$file"
 check "Plasma is restarted" has amd start
+check "exactly three wallpapers ship" test "$(find "$repo/wallpapers" -type f | wc -l)" -eq 3
+check "wallpapers are installed" test "$(find "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles" -type f | wc -l)" -eq 3
+for image in $(sed -n 's#^Image=file://##p' "$work/amd/home/$file"); do
+    check "layout wallpaper exists: ${image##*/}" test -f "$image"
+done
 : > "$work/amd/log"
 on amd --undo >/dev/null 2>&1
 check "undo stops Plasma before restoring the layout" has amd quit
 check "undo restores the layout" test ! -e "$work/amd/home/$file"
 check "undo restarts Plasma" has amd start
+check "undo removes the wallpapers" test ! -e "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles"
 
 before="$(find "$work/legion/home" -type f | wc -l)"
 on legion --all --hardware --dry-run >/dev/null 2>&1
