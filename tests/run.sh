@@ -163,6 +163,26 @@ check "undo restores the layout" test ! -e "$work/amd/home/$file"
 check "undo restarts Plasma" has amd start
 check "undo removes the wallpapers" test ! -e "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles"
 
+# Sidebar fix
+qml="$work/nvidia/usr/share/plasma/shells/org.kde.plasma.desktop/contents/views/Desktop.qml"
+fix="$repo/hardware/plasma-sidebar/fix-plasma-sidebar"
+mkdir -p "$(dirname "$qml")"
+printf '        hideOnWindowDeactivate: true\n\n        onVisibleChanged: {\n' > "$qml"
+on nvidia --hardware >/dev/null 2>&1
+check "two monitors: the hook is installed" test -f "$work/nvidia/etc/pacman.d/hooks/fix-plasma-sidebar.hook"
+check "two monitors: the script is installed" test -x "$work/nvidia/usr/local/bin/fix-plasma-sidebar"
+check "two monitors: Desktop.qml is patched" grep -q 'let result = desktop.x' "$qml"
+check "one monitor: no sidebar hook" test ! -e "$work/amd/etc/pacman.d/hooks/fix-plasma-sidebar.hook"
+check "the hook watches the patched file" grep -qx "Target = ${qml#"$work/nvidia/"}" "$repo/hardware/plasma-sidebar/fix-plasma-sidebar.hook"
+patched="$(cat "$qml")"
+"$fix" "$qml"
+check "patching twice changes nothing" test "$patched" = "$(cat "$qml")"
+echo 'something else' > "$work/unknown.qml"
+"$fix" "$work/unknown.qml" 2>/dev/null
+status=$?
+check "an unknown file doesn't fail pacman" test "$status" -eq 0
+check "an unknown file is left alone" grep -qx 'something else' "$work/unknown.qml"
+
 before="$(find "$work/legion/home" -type f | wc -l)"
 on legion --all --hardware --dry-run >/dev/null 2>&1
 check "dry run writes nothing" test "$(find "$work/legion/home" -type f | wc -l)" -eq "$before"

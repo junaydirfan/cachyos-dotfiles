@@ -16,6 +16,10 @@ internet connection, and run the same command again. Finished steps won't repeat
 monitor order can still put them on the wrong screen. Right-click the desktop, choose Enter Edit Mode, and add or move
 panels.
 
+**The Add Widgets sidebar opens cut off.** Plasma 6.8 opens it at the top-left of the whole desktop, so it's clipped on
+any monitor that doesn't start there. `./install.sh --hardware` offers a pacman hook that fixes this and reapplies the
+fix after Plasma updates. Restart Plasma or log back in afterwards. See [hardware support](../hardware/README.md).
+
 **A widget shows an error or is blank.** Run `./install.sh --themes` again. Panel Colorizer and Audio Visualizer also
 ship a compiled plugin that the installer doesn't build. If a feature is missing, follow their READMEs.
 

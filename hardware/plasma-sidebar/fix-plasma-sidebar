@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Plasma 6.8 stopped positioning the Add Widgets and Activities sidebars, so they
+# open at global (0,0) instead of the current monitor's left edge. This puts back
+# the x and y bindings removed by plasma-desktop commit 9eff3057e.
+# Runs from a pacman hook, so it warns instead of failing the transaction.
+set -uo pipefail
+
+file="${1:-/usr/share/plasma/shells/org.kde.plasma.desktop/contents/views/Desktop.qml}"
+anchor='        hideOnWindowDeactivate: true'
+
+skip() { echo "fix-plasma-sidebar: $1, leaving Desktop.qml alone" >&2; exit 0; }
+
+[ -f "$file" ] || skip "file not found"
+# Also true once upstream restores the position, which makes this script a no-op.
+grep -q 'desktop\.x' "$file" && exit 0
+[ "$(grep -cxF "$anchor" "$file")" -eq 1 ] || skip "the file has changed upstream"
+
+sed -i "/^$anchor\$/r /dev/stdin" "$file" <<'QML'
+
+        x: {
+            let result = desktop.x;
+            if (!root.containment) {
+                return result;
+            }
+
+            const rect = referenceRect;
+            result += rect.x;
+
+            if (sideBarOnRightEdge) {
+                result += rect.width - sidePanel.width;
+            }
+
+            return result;
+        }
+        y: desktop.y + (root.containment ? referenceRect.y : 0)
+QML
