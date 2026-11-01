@@ -20,6 +20,8 @@
 
 <sub>The full desktop, with personal details blurred.</sub>
 
+<img src="docs/screenshots/start.png" width="100%">
+
 <table>
   <tr>
     <td width="50%" valign="top">
