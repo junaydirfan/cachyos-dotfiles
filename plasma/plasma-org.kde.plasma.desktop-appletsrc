@@ -32,8 +32,8 @@ Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sonny-109605
 SlidePaths=@HOME@/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][651]
-ItemGeometries-1920x1080=Applet-816:976,0,64,64,0;Applet-804:0,256,1920,192,0;Applet-803:1280,448,640,64,0;Applet-819:1152,688,320,288,0;Applet-814:1408,48,448,208,0;Applet-813:1504,672,368,320,0;
-ItemGeometriesHorizontal=Applet-816:976,0,64,64,0;Applet-804:0,256,1920,192,0;Applet-803:1280,448,640,64,0;Applet-819:1152,688,320,288,0;Applet-814:1408,48,448,208,0;Applet-813:1504,672,368,320,0;
+ItemGeometries-1920x1080=Applet-816:976,0,64,64,0;Applet-804:0,256,1920,192,0;Applet-822:223.872,783.615,96,96,0;Applet-821:400,448,544,368,0;Applet-803:1280,448,640,64,0;Applet-820:959.147,540.036,288,449,0;Applet-819:1152,688,320,288,0;Applet-814:1408,48,448,208,0;
+ItemGeometriesHorizontal=Applet-816:976,0,64,64,0;Applet-804:0,256,1920,192,0;Applet-822:223.872,783.615,96,96,0;Applet-821:400,448,544,368,0;Applet-803:1280,448,640,64,0;Applet-820:959.147,540.036,288,449,0;Applet-819:1152,688,320,288,0;Applet-814:1408,48,448,208,0;
 activityId=@ACTIVITY@
 formfactor=0
 immutability=1
@@ -93,10 +93,6 @@ roundedBars=true
 visualizerStyle=0
 waveFillColors={"alpha":0.3,"colorsOrientation":0,"custom":"#313131","enabled":false,"followColor":0,"hueEnd":360,"hueStart":0,"image":{"fillMode":2,"source":""},"lightness":0.5,"lightnessEnabled":false,"list":["#ED8796","#A6DA95","#EED49F","#8AADF4","#F5BDE6","#8BD5CA","#f5a97f"],"reverseList":false,"saturation":0.5,"saturationEnabled":false,"smoothGradient":true,"sourceType":0,"systemColor":"highlightColor","systemColorSet":"Window"}
 
-[Containments][651][Applets][813]
-immutability=1
-plugin=com.jaxparrow07.nothingkdewidgets.media
-
 [Containments][651][Applets][814]
 immutability=1
 plugin=org.kde.plasma.clearclock
@@ -128,6 +124,18 @@ favoritesPortedToKAstats=true
 [Containments][651][Applets][819]
 immutability=1
 plugin=org.kde.screentide.widget
+
+[Containments][651][Applets][820]
+immutability=1
+plugin=plasmusic-toolbar
+
+[Containments][651][Applets][821]
+immutability=1
+plugin=org.kde.plasma.comic
+
+[Containments][651][Applets][822]
+immutability=1
+plugin=org.kde.kdeconnect
 
 [Containments][651][ConfigDialog]
 DialogHeight=630
