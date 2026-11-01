@@ -14,12 +14,11 @@
 
 </div>
 
-<!--
-  Add a desktop screenshot here once one has been taken with nothing private on screen:
-  <img src="docs/screenshots/desktop.png" alt="The full desktop" width="100%">
--->
-
 ## Screenshots
+
+<img src="docs/screenshots/desktop-preview.png" alt="The full desktop, with the floating dock, large clock, audio visualizer, Control Station and Discord voice widget over a black and white wallpaper" width="100%">
+
+<sub>The full desktop, with personal details blurred.</sub>
 
 <table>
   <tr>
