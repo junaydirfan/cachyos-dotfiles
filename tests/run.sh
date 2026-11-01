@@ -186,6 +186,49 @@ status=$?
 check "an unknown file doesn't fail pacman" test "$status" -eq 0
 check "an unknown file is left alone" grep -qx 'something else' "$work/unknown.qml"
 
+# Sync to GitHub, against a throwaway remote and stand-ins for the capture and check
+remote="$work/remote.git"
+clone="$work/clone"
+fake notify-send 'true'
+git init -q --bare -b main "$remote"
+git init -q -b main "$clone"
+git -C "$clone" config user.name t
+git -C "$clone" config user.email t@t
+mkdir -p "$clone/scripts" "$clone/home" "$clone/plasma" "$clone/wallpapers"
+cp "$repo/scripts/sync-to-github.sh" "$clone/scripts/"
+printf '#!/usr/bin/env bash\ncat "$SYNC_CAPTURE" > home/setting\n' > "$clone/scripts/sync-from-system.sh"
+printf '#!/usr/bin/env bash\ntest ! -e "$SYNC_CAPTURE.bad"\n' > "$clone/scripts/check-secrets.sh"
+chmod +x "$clone"/scripts/*.sh
+export SYNC_CAPTURE="$work/capture"
+echo one > "$SYNC_CAPTURE"
+echo one > "$clone/home/setting"
+git -C "$clone" add -A
+git -C "$clone" commit -qm init
+git -C "$clone" remote add origin "$remote"
+git -C "$clone" push -qu origin main
+sync_now() { PATH="$bin:$PATH" "$clone/scripts/sync-to-github.sh"; }
+pushed() { git -C "$remote" rev-list --count main; }
+
+sync_now
+check "sync with no changes makes no commit" test "$(pushed)" -eq 1
+echo two > "$SYNC_CAPTURE"
+sync_now
+check "sync pushes changed settings" test "$(git -C "$remote" show main:home/setting)" = two
+echo three > "$SYNC_CAPTURE"
+touch "$SYNC_CAPTURE.bad"
+sync_now >/dev/null 2>&1
+status=$?
+rm "$SYNC_CAPTURE.bad"
+check "a failed secret check is reported" test "$status" -eq 1
+check "a failed secret check pushes nothing" test "$(pushed)" -eq 2
+check "a failed secret check leaves the repo clean" test -z "$(git -C "$clone" status --porcelain)"
+echo draft > "$clone/home/draft"
+sync_now >/dev/null 2>&1
+status=$?
+check "unfinished work stops the sync" test "$status" -eq 1
+check "unfinished work isn't pushed" test "$(pushed)" -eq 2
+rm "$clone/home/draft"
+
 before="$(find "$work/legion/home" -type f | wc -l)"
 on legion --all --hardware --dry-run >/dev/null 2>&1
 check "dry run writes nothing" test "$(find "$work/legion/home" -type f | wc -l)" -eq "$before"
