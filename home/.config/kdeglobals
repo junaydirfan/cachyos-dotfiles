@@ -137,10 +137,10 @@ ColorSchemeHash=27363f5706202c1c8261fbda7381ddaab8ad48f3
 XftAntialias=true
 XftHintStyle=hintslight
 XftSubPixel=none
-font=Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
-menuFont=Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
-smallestReadableFont=Noto Sans,8,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
-toolBarFont=Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
+font=Helvetica,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
+menuFont=Helvetica,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
+smallestReadableFont=Helvetica,8,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
+toolBarFont=Helvetica,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
 
 [Icons]
 Theme=YAMIS
@@ -176,7 +176,7 @@ MaximumRemoteSize=0
 [WM]
 activeBackground=39,44,49
 activeBlend=252,252,252
-activeFont=Noto Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
+activeFont=Helvetica,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
 activeForeground=252,252,252
 inactiveBackground=32,36,40
 inactiveBlend=161,169,177
