@@ -148,7 +148,8 @@ available() {
     local known pkg skipped=""
     known="$(pacman -Slq 2>/dev/null | sort -u)"
     while read -r pkg; do
-        if printf '%s\n' "$known" | grep -Fxq -- "$pkg"; then
+        # A here-string, as grep -q in a pipe can kill the writer and fail under pipefail.
+        if grep -Fxq -- "$pkg" <<< "$known"; then
             printf '%s\n' "$pkg"
         else
             skipped="$skipped $pkg"
@@ -260,7 +261,7 @@ component_of() {
 # Helvetica is a commercial font, so most people need a stand-in.
 with_font() {
     # with_font <file>: prints a path to use in its place
-    if grep -q Helvetica "$1" && ! fc-list 2>/dev/null | grep -qi helvetica; then
+    if grep -q Helvetica "$1" && ! grep -qi helvetica <<< "$(fc-list 2>/dev/null)"; then
         local swapped
         swapped="$(mktemp)"
         sed 's/Helvetica/Noto Sans/g' "$1" > "$swapped"

@@ -60,12 +60,6 @@ drop_section '[Wallpapers]' "$dest/.config/plasmarc"
 # File dialog history, if any was saved.
 sed -i -E '/^(Recent (Files|URLs)|History)/d' "$dest/.config/kdeglobals"
 
-# The installer swaps in Noto Sans on PCs without Helvetica. Keep the original here.
-if ! fc-list 2>/dev/null | grep -qi helvetica; then
-    sed -i 's/Noto Sans/Helvetica/g' "$dest/.config/kdeglobals" "$dest/.gtkrc-2.0" \
-        "$dest/.config/gtk-3.0/settings.ini" "$dest/.config/gtk-4.0/settings.ini"
-fi
-
 # Panels and widgets. Installed by the installer's --plasma step.
 layout="$repo/plasma/plasma-org.kde.plasma.desktop-appletsrc"
 cp "$config/plasma-org.kde.plasma.desktop-appletsrc" "$layout"
