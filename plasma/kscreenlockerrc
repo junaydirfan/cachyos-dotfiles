@@ -1,0 +1,10 @@
+[Daemon]
+LockOnResume=false
+Timeout=30
+
+[Greeter]
+WallpaperPlugin=org.kde.image
+
+[Greeter][Wallpaper][org.kde.image][General]
+Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sevenstormphotography-1146030.jpg
+PreviewImage=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sevenstormphotography-1146030.jpg

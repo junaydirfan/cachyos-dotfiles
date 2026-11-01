@@ -108,6 +108,10 @@ while IFS= read -r image; do
     fi
 done < <(grep '^Image=file://' "$layout")
 sed -i -E 's#^Image=file://.*/([^/]+)$#Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/\1#' "$layout"
+# The lock screen has one wallpaper for every monitor. Installed with the layout.
+lock="$repo/plasma/kscreenlockerrc"
+cp "$config/kscreenlockerrc" "$lock"
+sed -i -E 's#^(Image|PreviewImage)=file://.*/([^/]+)$#\1=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/\2#' "$lock"
 # Widget icons kept in ~/Pictures travel with the repo. Runs after the wallpapers so
 # a wallpaper there isn't mistaken for an icon.
 while IFS= read -r image; do

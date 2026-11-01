@@ -12,7 +12,8 @@ only=""
 do_packages=0 do_themes=0 do_dotfiles=0 do_plasma=0 do_hardware=0 do_detect=0 do_undo=0
 components="shell terminal editors audio desktop shortcuts"
 required_widgets="com.jaxparrow07.nothingkdewidgets.media luisbocanegra.audio.visualizer
-luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals plasmusic-toolbar"
+luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals plasmusic-toolbar
+org.cachyos.discordvoice"
 # Let the tests stand in for the system and the theme list. Unset on real runs.
 sysroot="${DOTFILES_SYSROOT:-}"
 sources="${DOTFILES_SOURCES:-$repo/themes/sources.tsv}"
@@ -244,6 +245,13 @@ install_themes() {
             *) warn "unknown kind '$kind' for $name" ;;
         esac
     done 3< "$sources"
+    # Stored here rather than fetched. widgets/discord-voice/setup.sh connects it.
+    say "Discord Voice"
+    if [ "$dry_run" -eq 1 ]; then
+        printf 'would install widgets/discord-voice\n'
+    else
+        install_widget "$repo/widgets/discord-voice/package" || failed "couldn't install Discord Voice"
+    fi
 }
 
 component_of() {
@@ -381,6 +389,12 @@ install_plasma() {
     done
     install_icons
     place "$rendered" "$rel"
+    if [ -f "$repo/plasma/kscreenlockerrc" ]; then
+        local lock
+        lock="$(mktemp)"
+        sed "s#@HOME@#$HOME#g" "$repo/plasma/kscreenlockerrc" > "$lock"
+        place "$lock" .config/kscreenlockerrc
+    fi
     trap - EXIT
     run kstart plasmashell || failed "couldn't restart Plasma, log out and back in"
 }
