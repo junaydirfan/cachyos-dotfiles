@@ -63,11 +63,10 @@ sed -i -E '/^(Recent (Files|URLs)|History)/d' "$dest/.config/kdeglobals"
 # Panels and widgets. Installed by the installer's --plasma step.
 layout="$repo/plasma/plasma-org.kde.plasma.desktop-appletsrc"
 cp "$config/plasma-org.kde.plasma.desktop-appletsrc" "$layout"
-# Weather place, desktop icon positions (they name your files), wallpapers.
+# Weather place and desktop icon positions, which name your files.
 sed -i -E \
     -e '/^(placeDisplayName|placeInfo)=/d' \
     -e '/^(positions|changedPositions)=/d' \
-    -e '/^Image=/d' \
     -e 's/^activityId=[0-9a-f-]{36}$/activityId=@ACTIVITY@/' \
     "$layout"
 # A launcher icon kept in ~/Pictures won't exist for anyone else.
@@ -75,6 +74,18 @@ sed -i -E \
     -e "s#^icon=$HOME/Pictures/[^ ]*\$#icon=start-here-kde-symbolic#" \
     -e "s#\"icon\":\"$HOME/Pictures/[^\"]*\"#\"icon\":\"start-here-kde-symbolic\"#g" \
     "$layout"
+# Keep only the wallpapers applied right now, wherever they're stored.
+mkdir -p "$repo/wallpapers"
+find "$repo/wallpapers" -type f -delete
+while IFS= read -r image; do
+    image="${image#Image=file://}"
+    if [ -f "$image" ]; then
+        cp "$image" "$repo/wallpapers/"
+    else
+        echo "skip wallpaper that isn't a single file: ${image##*/}"
+    fi
+done < <(grep '^Image=file://' "$layout")
+sed -i -E 's#^Image=file://.*/([^/]+)$#Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/\1#' "$layout"
 sed -i "s#$HOME#@HOME@#g" "$layout"
 
 echo "synced. Now run scripts/check-secrets.sh and read the diff."
