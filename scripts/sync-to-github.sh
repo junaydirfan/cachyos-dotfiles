@@ -87,6 +87,18 @@ if [ "$deleted" -gt "$max_deleted" ]; then
     roll_back "the capture removed $deleted files, so nothing was committed"
 fi
 
+# The push still goes ahead, so the settings are safe, but say what a reinstall would lack.
+missing=""
+for id in $(sed -n 's/^plugin=//p' plasma/plasma-org.kde.plasma.desktop-appletsrc 2>/dev/null | sort -u); do
+    if [ -d "$HOME/.local/share/plasma/plasmoids/$id" ] && ! grep -qw -- "$id" install.sh 2>/dev/null; then
+        missing="$missing $id"
+    fi
+done
+if [ -n "$missing" ]; then
+    echo "not restorable:$missing" >&2
+    notify-send -a 'Dotfiles sync' 'Add these widgets to the installer' "$missing" 2>/dev/null || true
+fi
+
 git add -- "${paths[@]}"
 if ! git diff --cached --quiet; then
     git commit -q -m "Sync settings from my PC"

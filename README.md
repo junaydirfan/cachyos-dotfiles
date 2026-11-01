@@ -122,6 +122,8 @@ in `icons/`. `--dotfiles` and `--plasma` apply each icon to that PC's own launch
 
 Themes and widgets belong to their authors and keep their own licenses:
 
+- [KDE Control Station](https://github.com/EliverLara/kde-control-station) by Eliver Lara, GPLv3. The installer changes one line so it opens on Plasma 6.8
+
 - [Layan](https://github.com/vinceliuice/Layan-kde) and [WhiteSur cursors](https://github.com/vinceliuice/WhiteSur-cursors) by vinceliuice
 - Wallpapers are photos from [Pexels](https://www.pexels.com/license/) by Sonny and Seven Storm Photography, and aren't covered by this repo's MIT license
 - [YAMIS](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) by dirn

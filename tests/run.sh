@@ -186,6 +186,13 @@ check "undo restores the layout" test ! -e "$work/amd/home/$file"
 check "undo restarts Plasma" has amd start
 check "undo removes the wallpapers" test ! -e "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles"
 
+# Control Station's startup fix
+mkdir -p "$work/nvidia/home/.local/share/plasma/plasmoids/KdeControlStation/contents/ui"
+station="$work/nvidia/home/.local/share/plasma/plasmoids/KdeControlStation/contents/ui/main.qml"
+printf '    property int plasmaVersion\n' > "$station"
+on nvidia --themes >/dev/null 2>&1
+check "Control Station knows the Plasma version at startup" grep -q 'plasmaVersion: 8' "$station"
+
 # Discord voice
 check "the voice bridge follows a call" python3 -I "$repo/tests/discord_voice_test.py"
 

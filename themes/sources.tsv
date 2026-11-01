@@ -12,3 +12,4 @@ PlasMusic Toolbar	plasmoid	https://github.com/ccatterina/plasmusic-toolbar	0e78d
 Nothing Media	plasmoid	https://github.com/jaxparrow07/nothing-kde-widgets	c963a5d89917a94233dc178fe0e655a6c8f0ff45	packages/media	
 Panel Colorizer	plasmoid	https://github.com/luisbocanegra/plasma-panel-colorizer	74390e013217cdcad1bca55f01fec197a6584698	package	
 Audio Visualizer	plasmoid	https://github.com/luisbocanegra/plasma-audio-visualizer	883cdbcf594f433009066ad577c21a5bd49589d4	package	
+KDE Control Station	plasmoid	https://github.com/EliverLara/kde-control-station	bb473188a19d6cbe89a9c1bb5b08c7ddc609375d	package	

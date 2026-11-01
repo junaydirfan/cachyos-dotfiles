@@ -18,7 +18,10 @@ PlasmoidItem {
     property bool selfDeafened: false
     property int version: -1
     property string selectedId: ""
-    property Item wallpaper: null
+    // The desktop behind this widget, used for its blurred background.
+    property Item desktop: null
+    readonly property url wallpaperImage: desktop?.wallpaper?.configuration?.Image ?? ""
+    readonly property bool blurred: wallpaperImage.toString() !== ""
     readonly property bool inCall: status === "in-call"
     readonly property string message: ({
         "idle": "Not in a voice channel",
@@ -43,15 +46,22 @@ PlasmoidItem {
         onTriggered: root.poll()
     }
 
-    Component.onCompleted: {
-        poll();
-        for (let item = root.parent; item; item = item.parent) {
-            if (item.wallpaper) {
-                wallpaper = item.wallpaper;
-                break;
+    // Plasma attaches a widget to its desktop some time after creating it.
+    Timer {
+        interval: 500
+        running: root.desktop === null
+        repeat: true
+        onTriggered: {
+            for (let item = root.parent; item; item = item.parent) {
+                if (item.wallpaper) {
+                    root.desktop = item;
+                    break;
+                }
             }
         }
     }
+
+    Component.onCompleted: poll()
 
     // The bridge holds this request open until something changes.
     function poll() {
@@ -199,22 +209,34 @@ PlasmoidItem {
             layer.enabled: true
         }
 
+        // Plasma's wallpaper item can't be captured, so blur a copy of its image.
+        Image {
+            id: wallpaperCopy
+            visible: root.blurred
+            width: root.desktop?.width ?? 0
+            height: root.desktop?.height ?? 0
+            source: root.wallpaperImage
+            sourceSize: Qt.size(width / 2, height / 2)
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+        }
+
         ShaderEffectSource {
             id: backdrop
             anchors.fill: card
             visible: false
-            live: true
-            sourceItem: root.wallpaper
+            hideSource: true
+            sourceItem: wallpaperCopy
         }
 
         Timer {
             // A desktop widget can be dragged without its own position changing.
             interval: 1000
-            running: root.wallpaper !== null
+            running: root.blurred
             repeat: true
             triggeredOnStart: true
             onTriggered: {
-                const origin = card.mapToItem(root.wallpaper, 0, 0);
+                const origin = card.mapToItem(wallpaperCopy, 0, 0);
                 backdrop.sourceRect = Qt.rect(origin.x, origin.y, card.width, card.height);
             }
         }
@@ -222,7 +244,7 @@ PlasmoidItem {
         MultiEffect {
             anchors.fill: card
             source: backdrop
-            visible: root.wallpaper !== null
+            visible: root.blurred
             autoPaddingEnabled: false
             blurEnabled: true
             blur: 1
@@ -239,7 +261,7 @@ PlasmoidItem {
             height: Math.min(parent.height, content.implicitHeight + view.padding * 2)
             radius: Kirigami.Units.gridUnit
             // The same near-black as the dock, more solid if the blur isn't available.
-            color: root.wallpaper ? "#b80c0d10" : "#e60c0d10"
+            color: root.blurred ? "#b80c0d10" : "#e60c0d10"
             border.color: "#1affffff"
             border.width: 1
             clip: true
