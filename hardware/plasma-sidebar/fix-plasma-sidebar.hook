@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Path
+Target = usr/share/plasma/shells/org.kde.plasma.desktop/contents/views/Desktop.qml
+
+[Action]
+Description = Restoring the Plasma sidebar position...
+When = PostTransaction
+Exec = /usr/local/bin/fix-plasma-sidebar

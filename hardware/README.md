@@ -19,9 +19,24 @@ Then `./install.sh --hardware` offers only what matches:
 | Laptop with two GPUs | `nvidia-prime` and `switcheroo-control` for choosing which GPU runs an app |
 | Lenovo Legion | Fan and power controls. See [the Legion notes](legion-pro-7/README.md) |
 | Audeze Maxwell or EPOMAKER TH99 Pro plugged in | A udev rule so the device works without root. See [peripherals](peripherals/) |
+| Two or more monitors | A pacman hook that fixes the Add Widgets sidebar opening cut off on Plasma 6.8. See below |
 
 Desktops and laptops get the same setup. The battery and brightness widgets stay out of the way on PCs without them.
 
 CachyOS sets up your graphics driver during installation, so most people won't need anything here beyond the extras.
 
 Fixing a misdetected monitor works on any PC. See the EDID steps in [the Legion notes](legion-pro-7/README.md#forcing-an-edid-for-an-external-monitor).
+
+## Add Widgets sidebar
+
+The hook patches Plasma's `Desktop.qml` after each `plasma-desktop` update, and stops changing it once upstream restores
+the sidebar position or the file changes shape. `pacman -Qkk plasma-desktop` will report that one file as altered.
+`--undo` doesn't cover this. To remove it:
+
+```bash
+sudo rm /etc/pacman.d/hooks/fix-plasma-sidebar.hook /usr/local/bin/fix-plasma-sidebar
+```
+
+```bash
+sudo pacman -S plasma-desktop
+```

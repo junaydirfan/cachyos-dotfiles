@@ -367,8 +367,19 @@ install_rule() {
     run sudo install -m644 "$repo/hardware/peripherals/$1" /etc/udev/rules.d/
 }
 
+install_sidebar_fix() {
+    local dir="$repo/hardware/plasma-sidebar"
+    ask "Install the pacman hook that keeps the Add Widgets sidebar on the right monitor?" || return 0
+    run sudo install -Dm755 "$dir/fix-plasma-sidebar" "$sysroot/usr/local/bin/fix-plasma-sidebar" &&
+        run sudo install -Dm644 "$dir/fix-plasma-sidebar.hook" "$sysroot/etc/pacman.d/hooks/fix-plasma-sidebar.hook" &&
+        run sudo "$dir/fix-plasma-sidebar" "$sysroot/usr/share/plasma/shells/org.kde.plasma.desktop/contents/views/Desktop.qml" ||
+        failed "installing the sidebar fix"
+}
+
 install_hardware() {
     show_detected
+
+    if [ "$screens" -ge 2 ]; then install_sidebar_fix; fi
 
     if has_gpu 'NVIDIA'; then
         install_group gpu-nvidia "Install NVIDIA tools"
