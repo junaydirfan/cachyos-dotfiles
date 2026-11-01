@@ -12,8 +12,7 @@ only=""
 do_packages=0 do_themes=0 do_dotfiles=0 do_plasma=0 do_hardware=0 do_detect=0 do_undo=0
 components="shell terminal editors audio desktop shortcuts"
 required_widgets="com.jaxparrow07.nothingkdewidgets.media luisbocanegra.audio.visualizer
-luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals org.kde.screentide.widget
-plasmusic-toolbar"
+luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals plasmusic-toolbar"
 # Let the tests stand in for the system and the theme list. Unset on real runs.
 sysroot="${DOTFILES_SYSROOT:-}"
 sources="${DOTFILES_SOURCES:-$repo/themes/sources.tsv}"
@@ -290,6 +289,28 @@ install_dotfiles() {
         [[ "$chosen" == *" $(component_of "$rel") "* ]] || continue
         place "$(with_font "$src")" "$rel"
     done < <(find "$repo/home" -type f -print0)
+    if [[ "$chosen" == *" desktop "* ]]; then install_icons; fi
+}
+
+# Custom app icons are applied to this PC's own launchers, so apps it doesn't have
+# get no dead menu entries.
+install_icons() {
+    local image entry icon dir rendered
+    for image in "$repo"/icons/custom-*; do
+        [ -e "$image" ] || continue
+        place "$image" ".local/share/icons/${image##*/}"
+    done
+    [ -f "$repo/icons/overrides.tsv" ] || return 0
+    while IFS=$'\t' read -r entry icon; do
+        for dir in "$sysroot/usr/share/applications" "$sysroot/var/lib/flatpak/exports/share/applications"; do
+            [ -f "$dir/$entry" ] || continue
+            rendered="$(mktemp)"
+            sed "0,/^Icon=/s#^Icon=.*#Icon=$icon#" "$dir/$entry" > "$rendered"
+            place "$rendered" ".local/share/applications/$entry"
+            break
+        done
+    done < "$repo/icons/overrides.tsv"
+    run kbuildsycoca6 >/dev/null 2>&1 || true
 }
 
 # Keeps only the dock shortcuts for apps this PC actually has.
@@ -358,6 +379,7 @@ install_plasma() {
     for image in "$repo"/wallpapers/*; do
         place "$image" ".local/share/wallpapers/cachyos-dotfiles/${image##*/}"
     done
+    install_icons
     place "$rendered" "$rel"
     trap - EXIT
     run kstart plasmashell || failed "couldn't restart Plasma, log out and back in"

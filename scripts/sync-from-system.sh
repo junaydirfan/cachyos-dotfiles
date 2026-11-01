@@ -60,6 +60,33 @@ drop_section '[Wallpapers]' "$dest/.config/plasmarc"
 # File dialog history, if any was saved.
 sed -i -E '/^(Recent (Files|URLs)|History)/d' "$dest/.config/kdeglobals"
 
+# Custom app icons: launchers whose icon differs from the one the app ships with.
+# Only the image and its app are kept, as the rest of a launcher is per-PC.
+icons="$repo/icons"
+rm -rf "$icons"
+mkdir -p "$icons"
+: > "$icons/overrides.tsv"
+for entry in "$HOME"/.local/share/applications/*.desktop; do
+    file="${entry##*/}"
+    base=""
+    for dir in /usr/share/applications /var/lib/flatpak/exports/share/applications; do
+        if [ -f "$dir/$file" ]; then base="$dir/$file"; break; fi
+    done
+    [ -n "$base" ] || continue
+    icon="$(sed -n 's/^Icon=//p;T;q' "$entry")"
+    [ -n "$icon" ] && [ "$icon" != "$(sed -n 's/^Icon=//p;T;q' "$base")" ] || continue
+    case "$icon" in
+        /*) image="$icon" ;;
+        *) image="$(find "$HOME/.local/share/icons" -maxdepth 1 -type f -name "$icon.*" -print -quit)" ;;
+    esac
+    if [ -f "$image" ]; then
+        name="custom-${image##*/}"
+        cp "$image" "$icons/$name"
+        icon="${name%.*}"
+    fi
+    printf '%s\t%s\n' "$file" "$icon" >> "$icons/overrides.tsv"
+done
+
 # Panels and widgets. Installed by the installer's --plasma step.
 layout="$repo/plasma/plasma-org.kde.plasma.desktop-appletsrc"
 cp "$config/plasma-org.kde.plasma.desktop-appletsrc" "$layout"
@@ -68,11 +95,6 @@ sed -i -E \
     -e '/^(placeDisplayName|placeInfo)=/d' \
     -e '/^(positions|changedPositions)=/d' \
     -e 's/^activityId=[0-9a-f-]{36}$/activityId=@ACTIVITY@/' \
-    "$layout"
-# A launcher icon kept in ~/Pictures won't exist for anyone else.
-sed -i -E \
-    -e "s#^icon=$HOME/Pictures/[^ ]*\$#icon=start-here-kde-symbolic#" \
-    -e "s#\"icon\":\"$HOME/Pictures/[^\"]*\"#\"icon\":\"start-here-kde-symbolic\"#g" \
     "$layout"
 # Keep only the wallpapers applied right now, wherever they're stored.
 mkdir -p "$repo/wallpapers"
@@ -86,6 +108,13 @@ while IFS= read -r image; do
     fi
 done < <(grep '^Image=file://' "$layout")
 sed -i -E 's#^Image=file://.*/([^/]+)$#Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/\1#' "$layout"
+# Widget icons kept in ~/Pictures travel with the repo. Runs after the wallpapers so
+# a wallpaper there isn't mistaken for an icon.
+while IFS= read -r image; do
+    [ -f "$image" ] || continue
+    cp "$image" "$icons/custom-${image##*/}"
+    sed -i "s#$image#@HOME@/.local/share/icons/custom-${image##*/}#g" "$layout"
+done < <(grep -oE "$HOME/Pictures/[^\",]+\.(png|svg)" "$layout" | sort -u)
 sed -i "s#$HOME#@HOME@#g" "$layout"
 
 echo "synced. Now run scripts/check-secrets.sh and read the diff."

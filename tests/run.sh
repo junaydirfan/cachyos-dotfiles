@@ -29,6 +29,7 @@ fake fc-list 'if [ -n "${HELVETICA:-}" ]; then echo Helvetica; seq 100000; fi'
 fake kquitapp6 'echo quit >> "$DOTFILES_SYSROOT/log"'
 fake kstart 'echo start >> "$DOTFILES_SYSROOT/log"'
 fake qdbus6 'echo test-activity'
+fake kbuildsycoca6 'true'
 fake kpackagetool6 'echo "kpackagetool6 $*" >> "$DOTFILES_SYSROOT/log"
 if [ "$3" = -i ]; then mkdir -p "$HOME/.local/share/plasma/plasmoids/$(basename "$4")"; fi'
 
@@ -115,6 +116,20 @@ check "default apps are never replaced" test ! -e "$repo/home/.config/mimeapps.l
 HELVETICA=1 on nvidia --only desktop >/dev/null 2>&1
 check "installed Helvetica is kept" grep -q Helvetica "$work/nvidia/home/.config/kdeglobals"
 
+# Custom icons reach only the apps this PC has
+entry="$(cut -f1 "$repo/icons/overrides.tsv" | head -n1)"
+absent="$(cut -f1 "$repo/icons/overrides.tsv" | tail -n1)"
+icon="$(cut -f2 "$repo/icons/overrides.tsv" | head -n1)"
+printf '[Desktop Entry]\nIcon=stock\nExec=app\n\n[Desktop Action a]\nIcon=action\n' > "$work/nvidia/usr/share/applications/$entry"
+on nvidia --only desktop >/dev/null 2>&1
+apps="$work/nvidia/home/.local/share/applications"
+check "custom icon images are installed" test -f "$work/nvidia/home/.local/share/icons/$icon.png"
+check "an installed app gets its custom icon" grep -qx "Icon=$icon" "$apps/$entry"
+check "the rest of the launcher is kept" grep -qx 'Exec=app' "$apps/$entry"
+check "action icons are left alone" grep -qx 'Icon=action' "$apps/$entry"
+check "a missing app gets no launcher" test ! -e "$apps/$absent"
+check "the layout has no paths outside the repo" bash -c "! grep -q 'Pictures' '$repo/plasma/plasma-org.kde.plasma.desktop-appletsrc'"
+
 # Backups and undo
 home="$work/amd/home"
 mkdir -p "$home/.config/fish"
@@ -198,14 +213,15 @@ git init -q --bare -b main "$remote"
 git init -q -b main "$clone"
 git -C "$clone" config user.name t
 git -C "$clone" config user.email t@t
-mkdir -p "$clone/scripts" "$clone/home" "$clone/plasma" "$clone/wallpapers"
+mkdir -p "$clone/scripts" "$clone/home" "$clone/plasma" "$clone/wallpapers" "$clone/icons"
 cp "$repo/scripts/sync-to-github.sh" "$clone/scripts/"
-printf '#!/usr/bin/env bash\ncat "$SYNC_CAPTURE" > home/setting\n' > "$clone/scripts/sync-from-system.sh"
+printf '#!/usr/bin/env bash\ntest ! -e "$SYNC_CAPTURE.broken" || { rm home/setting; exit 1; }\ntest ! -e "$SYNC_CAPTURE.wipe" || rm -f home/many-*\ncat "$SYNC_CAPTURE" > home/setting\n' > "$clone/scripts/sync-from-system.sh"
 printf '#!/usr/bin/env bash\ntest ! -e "$SYNC_CAPTURE.bad"\n' > "$clone/scripts/check-secrets.sh"
 chmod +x "$clone"/scripts/*.sh
 export SYNC_CAPTURE="$work/capture"
 echo one > "$SYNC_CAPTURE"
 echo one > "$clone/home/setting"
+touch "$clone/plasma/keep" "$clone/wallpapers/keep" "$clone/icons/keep"
 git -C "$clone" add -A
 git -C "$clone" commit -qm init
 git -C "$clone" remote add origin "$remote"
@@ -232,6 +248,23 @@ status=$?
 check "unfinished work stops the sync" test "$status" -eq 1
 check "unfinished work isn't pushed" test "$(pushed)" -eq 2
 rm "$clone/home/draft"
+touch "$SYNC_CAPTURE.broken"
+sync_now >/dev/null 2>&1
+status=$?
+rm "$SYNC_CAPTURE.broken"
+check "a failed capture is reported" test "$status" -eq 1
+check "a failed capture leaves the repo clean" test -z "$(git -C "$clone" status --porcelain)"
+echo two > "$SYNC_CAPTURE"
+sync_now
+touch "$clone"/home/many-{1..11}
+git -C "$clone" add -A
+git -C "$clone" commit -qm many
+touch "$SYNC_CAPTURE.wipe"
+sync_now >/dev/null 2>&1
+status=$?
+rm "$SYNC_CAPTURE.wipe"
+check "a capture that deletes too much is reported" test "$status" -eq 1
+check "a capture that deletes too much keeps the files" test -f "$clone/home/many-1"
 
 before="$(find "$work/legion/home" -type f | wc -l)"
 on legion --all --hardware --dry-run >/dev/null 2>&1

@@ -99,8 +99,12 @@ scripts/sync-to-github.sh --install
 scripts/sync-to-github.sh --remove
 ```
 
-A sync stops and shows a notification if the secret check fails, the repo has uncommitted changes, or GitHub can't be
-reached. Nothing is committed in the first two cases.
+A sync stops and shows a notification if the capture fails or removes more than 10 files, the secret check fails, the
+repo has uncommitted changes, or GitHub can't be reached. Only an unreachable GitHub leaves a commit, which the next sync
+pushes.
+
+Custom app icons are included. Set one on a launcher, or on a panel widget from `~/Pictures`, and the next sync saves it
+in `icons/`. `--dotfiles` and `--plasma` apply each icon to that PC's own launcher, and skip apps it doesn't have.
 
 ## Credits
 
@@ -110,7 +114,7 @@ Themes and widgets belong to their authors and keep their own licenses:
 - Wallpapers are photos from [Pexels](https://www.pexels.com/license/) by Sonny and Seven Storm Photography, and aren't covered by this repo's MIT license
 - [YAMIS](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) by dirn
 - [ClearClock](https://github.com/qewer33/ClearClock), [KVitals](https://github.com/yassine20011/kvitals),
-  [Screentide](https://github.com/Agarwalpratyaksh/Screentide), [PlasMusic Toolbar](https://github.com/ccatterina/plasmusic-toolbar), [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),
+  [PlasMusic Toolbar](https://github.com/ccatterina/plasmusic-toolbar), [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),
   [Panel Colorizer](https://github.com/luisbocanegra/plasma-panel-colorizer) and [Plasma Audio Visualizer](https://github.com/luisbocanegra/plasma-audio-visualizer)
 
 My own files are under the [MIT License](LICENSE).
