@@ -5,7 +5,6 @@ Order=c0b97f16-1b6e-406d-9870-e78ada722ce8
 Description=Firefox PiP
 above=true
 aboverule=2
-fullscreenrule=2
 title=Picture-in-Picture
 titlematch=1
 wmclass=firefox
