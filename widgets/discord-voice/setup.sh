@@ -30,7 +30,14 @@ RestartSec=5
 WantedBy=default.target
 UNIT
 systemctl --user daemon-reload
-systemctl --user enable --now "$service"
+systemctl --user enable "$service"
+systemctl --user restart "$service"
+
+# A failed sign-in leaves no token, so ask again rather than reuse details that may be wrong.
+if [ -f "$config" ] && ! grep -q access_token "$config" && [ -t 0 ]; then
+    read -r -p "Discord isn't connected yet. Enter your app details again? [y/N] " reply
+    if [[ "$reply" =~ ^[Yy] ]]; then rm -f "$config"; fi
+fi
 
 if [ ! -f "$config" ] && [ -t 0 ]; then
     cat <<'HELP'
@@ -38,7 +45,7 @@ if [ ! -f "$config" ] && [ -t 0 ]; then
 Create a free Discord app (one time):
   1. Open https://discord.com/developers/applications and choose New Application.
   2. Under OAuth2, copy the Client ID and reset to get a Client Secret.
-  3. Under OAuth2 > Redirects, add http://127.0.0.1 and save.
+  3. Under OAuth2 > Redirects, keep exactly one entry, http://127.0.0.1, and save.
 
 HELP
     read -r -p "Client ID: " client_id

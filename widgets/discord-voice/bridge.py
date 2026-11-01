@@ -10,6 +10,7 @@ import socket
 import struct
 import threading
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
@@ -28,6 +29,10 @@ OP_HANDSHAKE, OP_FRAME, OP_CLOSE, OP_PING, OP_PONG = range(5)
 
 class Closed(Exception):
     """Discord went away, so start over."""
+
+
+class AuthFailed(Exception):
+    """Sign-in failed. Retrying would only keep popping up Discord's approval prompt."""
 
 
 class State:
@@ -180,10 +185,23 @@ class Rpc:
                 self.on_event(message)
 
 
-def authenticate(rpc, config):
-    if not config.get("access_token"):
-        code = rpc.call("AUTHORIZE", {"client_id": config["client_id"], "scopes": SCOPES})["code"]
+def sign_in(rpc, config):
+    # On this socket redirect_uri is refused, and response_type makes Discord use the
+    # app's first registered redirect instead.
+    args = {"client_id": config["client_id"], "scopes": SCOPES, "response_type": "code"}
+    try:
+        code = rpc.call("AUTHORIZE", args)["code"]
         request_token(config, grant_type="authorization_code", code=code, redirect_uri=REDIRECT)
+    except urllib.error.HTTPError as error:
+        raise AuthFailed(f"token request refused: {error.code} {error.read()[:200]!r}") from error
+    except RuntimeError as error:
+        raise AuthFailed(str(error)) from error
+
+
+def authenticate(rpc, config, state):
+    if not config.get("access_token"):
+        state.set("authorizing")
+        sign_in(rpc, config)
     elif time.time() > config.get("expires_at", 0) - 3600:
         request_token(config, grant_type="refresh_token", refresh_token=config["refresh_token"])
     rpc.call("AUTHENTICATE", {"access_token": config["access_token"]})
@@ -272,11 +290,12 @@ def run_once(state):
     try:
         rpc.send(OP_HANDSHAKE, {"v": 1, "client_id": config["client_id"]})
         rpc.wait_ready()
-        authenticate(rpc, config)
+        authenticate(rpc, config, state)
         session.run()
     finally:
         rpc.close()
-        state.set("offline")
+        if state.status != "auth-error":
+            state.set("offline")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -294,6 +313,13 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 
+def wait_for_new_config():
+    """Sign-in is only worth retrying once setup has saved something different."""
+    before = CONFIG.stat().st_mtime
+    while CONFIG.stat().st_mtime == before:
+        time.sleep(RETRY_SECONDS)
+
+
 def main():
     state = State()
     Handler.state = state
@@ -302,6 +328,10 @@ def main():
     while True:
         try:
             run_once(state)
+        except AuthFailed as error:
+            print(f"sign-in failed: {error}", flush=True)
+            state.set("auth-error")
+            wait_for_new_config()
         except (Closed, OSError, ValueError, KeyError, RuntimeError) as error:
             print(f"reconnecting: {error!r}", flush=True)
             # A rejected token won't recover by itself, so ask Discord again.
