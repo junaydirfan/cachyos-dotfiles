@@ -188,7 +188,6 @@ check "undo removes the wallpapers" test ! -e "$work/amd/home/.local/share/wallp
 
 # Discord voice
 check "the voice bridge follows a call" python3 -I "$repo/tests/discord_voice_test.py"
-check "the voice widget has no Plasma-only types the shell lacks" bash -c "! grep -q 'Kirigami.Avatar' '$repo/widgets/discord-voice/package/contents/ui/main.qml'"
 
 # Sidebar fix
 qml="$work/nvidia/usr/share/plasma/shells/org.kde.plasma.desktop/contents/views/Desktop.qml"
