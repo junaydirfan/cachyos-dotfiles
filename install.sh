@@ -13,7 +13,7 @@ do_packages=0 do_themes=0 do_dotfiles=0 do_plasma=0 do_hardware=0 do_detect=0 do
 components="shell terminal editors audio desktop shortcuts"
 required_widgets="com.jaxparrow07.nothingkdewidgets.media luisbocanegra.audio.visualizer
 luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals plasmusic-toolbar
-org.cachyos.discordvoice"
+org.cachyos.discordvoice KdeControlStation"
 # Let the tests stand in for the system and the theme list. Unset on real runs.
 sysroot="${DOTFILES_SYSROOT:-}"
 sources="${DOTFILES_SOURCES:-$repo/themes/sources.tsv}"
@@ -217,6 +217,14 @@ install_widget() {
     fi
 }
 
+# Control Station learns the Plasma version only after its pages have loaded, so it
+# picks controls that no longer exist and its panel never opens.
+fix_control_station() {
+    local main="$HOME/.local/share/plasma/plasmoids/KdeControlStation/contents/ui/main.qml"
+    [ -f "$main" ] || return 0
+    run sed -i 's/^    property int plasmaVersion$/    property int plasmaVersion: 8/' "$main"
+}
+
 install_themes() {
     local work="" name kind url commit subpath target dir file
     [ "$dry_run" -eq 1 ] || work="$(mktemp -d)"
@@ -245,6 +253,7 @@ install_themes() {
             *) warn "unknown kind '$kind' for $name" ;;
         esac
     done 3< "$sources"
+    fix_control_station
     # Stored here rather than fetched. widgets/discord-voice/setup.sh connects it.
     say "Discord Voice"
     if [ "$dry_run" -eq 1 ]; then

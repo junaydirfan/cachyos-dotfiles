@@ -42,6 +42,7 @@ copy .config/zed/settings.json
 copy .config/micro/settings.json
 copy .config/cava/themes
 copy .config/cava/shaders
+copy .config/systemd/user/plasma-plasmashell.service.d/clock-format.conf
 
 # Only CachyOS ships this file, so don't fail without it.
 sed -i -E 's#^source (/usr/share/cachyos-fish-config/.*)$#test -f \1; and source \1#' \
