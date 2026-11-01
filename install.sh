@@ -4,7 +4,7 @@ set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 state="$HOME/.local/state/cachyos-dotfiles"
-run_dir="$state/backup-$(date +%Y%m%d-%H%M%S)"
+run_dir="$state/backup-$(date +%Y%m%d-%H%M%S)-$$"
 dry_run=0
 changed=0
 failures=()

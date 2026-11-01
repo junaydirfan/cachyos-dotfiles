@@ -20,6 +20,9 @@ panels.
 any monitor that doesn't start there. `./install.sh --hardware` offers a pacman hook that fixes this and reapplies the
 fix after Plasma updates. Restart Plasma or log back in afterwards. See [hardware support](../hardware/README.md).
 
+**Notifications appear cut off at the edge of a screen.** The system tray has to be saved on the same screen as its
+panel. Run `./install.sh --plasma` again to fix it, or choose a fixed corner in System Settings under Notifications.
+
 **A widget shows an error or is blank.** Run `./install.sh --themes` again. Panel Colorizer and Audio Visualizer also
 ship a compiled plugin that the installer doesn't build. If a feature is missing, follow their READMEs.
 

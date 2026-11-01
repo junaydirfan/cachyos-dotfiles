@@ -147,6 +147,9 @@ file=".config/plasma-org.kde.plasma.desktop-appletsrc"
 panel_screen() { awk '/^\[Containments\]\[778\]$/{on=1;next} /^\[/{on=0} on&&/^lastScreen=/{print substr($0,12)}' "$1"; }
 check "one monitor: dock on the main screen" test "$(panel_screen "$work/amd/home/$file")" = 0
 check "three monitors: dock on the middle screen" test "$(panel_screen "$work/legion/home/$file")" = 1
+tray_screen() { awk '/^\[Containments\]\[778\]\[Applets\]\[783\]$/{on=1;next} /^\[/{on=0} on&&/^lastScreen=/{print substr($0,12)}' "$1"; }
+check "one monitor: tray follows the dock" test "$(tray_screen "$work/amd/home/$file")" = 0
+check "three monitors: tray follows the dock" test "$(tray_screen "$work/legion/home/$file")" = 1
 check "placeholders are filled in" bash -c "! grep -q '@HOME@\|@ACTIVITY@\|@ONE@' '$work/amd/home/$file'"
 check "shortcuts for missing apps are dropped" bash -c "! grep -q 'com.spotify.Client' '$work/amd/home/$file'"
 check "the file manager shortcut stays" grep -q 'preferred://filemanager' "$work/amd/home/$file"
