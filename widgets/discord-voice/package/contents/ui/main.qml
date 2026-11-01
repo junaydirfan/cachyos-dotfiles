@@ -15,6 +15,8 @@ PlasmoidItem {
     readonly property string message: ({
         "idle": "Not in a voice channel",
         "offline": "Discord isn't running",
+        "authorizing": "Approve the request in Discord",
+        "auth-error": "Sign-in failed, see the Redirects step in setup.sh",
         "no-config": "Run widgets/discord-voice/setup.sh",
         "bridge-down": "Voice bridge isn't running"
     })[status] ?? ""
