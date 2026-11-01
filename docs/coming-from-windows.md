@@ -21,5 +21,4 @@ It asks for your password, and nothing appears as you type it.
 **Will my Windows games work?** Many do through Steam and Proton. The optional `gaming` packages set that up. Check
 [ProtonDB](https://www.protondb.com/) for specific games, especially ones with anti-cheat.
 
-**Can I undo this?** Yes. The installer backs up what it replaces, and [troubleshooting](troubleshooting.md) shows how to
-restore it.
+**Can I undo this?** Yes. Run `./install.sh --undo`. See [troubleshooting](troubleshooting.md) for more.

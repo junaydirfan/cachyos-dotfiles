@@ -38,21 +38,46 @@ Log out and back in when it finishes.
 | --- | --- |
 | `--packages` | Installs package groups from `packages/`, asking about each. AUR packages are confirmed one by one. |
 | `--themes` | Fetches themes, icons, cursors and widgets from their authors. See `themes/sources.tsv`. |
-| `--dotfiles` | Copies `home/` into your home folder: Plasma, KWin, shortcuts, fish, Alacritty, fastfetch, Zed, micro, cava. |
+| `--dotfiles` | Copies configs into your home folder, asking about each part. |
+| `--only LIST` | Copies just the parts you name, with no prompts. See below. |
 | `--plasma` | Applies the panel and widget layout, then restarts the Plasma shell. |
 | `--hardware` | Detects your PC and offers matching GPU packages and device extras. Never part of `--all`. See [hardware support](hardware/README.md). |
+| `--undo` | Puts back what the most recent run changed. |
 | `--detect` | Shows the CPU, GPUs, monitors and PC type it found, then exits. |
 | `--all` | Everything except `--hardware`. |
 | `--dry-run` | Shows what would happen. |
 
+## Pick only what you want
+
+You don't have to take the whole setup. Configs come in parts:
+
+| Part | Includes |
+| --- | --- |
+| `shell` | fish |
+| `terminal` | Alacritty, Konsole, fastfetch |
+| `editors` | Zed, micro |
+| `audio` | cava |
+| `desktop` | KWin, colors, fonts, Dolphin, GTK apps, mouse cursor |
+| `shortcuts` | Keyboard shortcuts, which replace your own |
+
+For example, to copy just the terminal and shell configs:
+
+```bash
+./install.sh --only terminal,shell
+```
+
 ## Before you run it
 
-- Anything replaced is backed up to `~/.local/state/cachyos-dotfiles/`, and the installer prints the restore command.
+- `./install.sh --undo` reverses the last run: it restores replaced files and removes new ones. Installed packages stay.
+- Your default apps and display scaling are left alone.
+- If one download or package fails, the rest still install and you get a list of what didn't finish.
+- Themes and widgets are pinned to versions in `themes/sources.tsv`, so an upstream change can't alter what you install.
 - You need CachyOS with KDE Plasma. Other Arch-based systems will mostly work, but not the gaming packages or fish config.
 - The panel layout fits itself to one, two or three or more monitors. Your own display scaling is kept.
-- Wallpapers, the weather location and the Helvetica UI font aren't included.
-- Tested on my own Intel and NVIDIA laptop. AMD, Intel-only and desktop detection were tested with simulated hardware,
-  not real PCs, and nothing has run on a clean install yet. Please open an issue if something breaks.
+- Wallpapers and the weather location aren't included. Helvetica isn't either, so you get Noto Sans unless you have it.
+- Tested on my own Intel and NVIDIA laptop, with the panel layout also run in a separate Plasma session. AMD, Intel-only
+  and desktop PCs are covered by simulated tests (`tests/run.sh`), not real hardware, and nothing has run on a clean
+  install yet. Please open an issue with the output of `./install.sh --detect` if something breaks.
 
 More help is in [troubleshooting](docs/troubleshooting.md).
 

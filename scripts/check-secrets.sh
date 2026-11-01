@@ -44,7 +44,7 @@ for needle in "${needles[@]}"; do
     hits="$(grep -IlF -i -- "$needle" "${files[@]}" 2>/dev/null)"
     if [ -n "$hits" ]; then
         echo "personal value found (${#needle} chars) in:"
-        printf '  %s\n' $hits
+        printf '%s\n' "$hits" | sed 's|^|  |'
         status=1
     fi
 done
@@ -62,7 +62,7 @@ for pattern in "${patterns[@]}"; do
     hits="$(grep -InE -- "$pattern" "${files[@]}" 2>/dev/null | grep -v '^scripts/check-secrets.sh:' | cut -d: -f1,2)"
     if [ -n "$hits" ]; then
         echo "suspicious pattern '$pattern' at:"
-        printf '  %s\n' $hits
+        printf '%s\n' "$hits" | sed 's|^|  |'
         status=1
     fi
 done

@@ -1,14 +1,14 @@
-# name	kind	url	subpath	target
+# name	kind	url	commit	subpath	target
 # kind "dir" copies subpath to target (relative to $HOME). kind "plasmoid" installs subpath with kpackagetool6.
-Layan Plasma theme	dir	https://github.com/vinceliuice/Layan-kde	plasma/desktoptheme/Layan	.local/share/plasma/desktoptheme/Layan
-Layan Plasma theme shared files	dir	https://github.com/vinceliuice/Layan-kde	plasma/desktoptheme/common	.local/share/plasma/desktoptheme/Layan
-Layan window decoration	dir	https://github.com/vinceliuice/Layan-kde	aurorae/themes/Layan	.local/share/aurorae/themes/Layan
-Layan colors	dir	https://github.com/vinceliuice/Layan-kde	color-schemes	.local/share/color-schemes
-YAMIS icons	dir	https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set	.	.local/share/icons/YAMIS
-WhiteSur cursors	dir	https://github.com/vinceliuice/WhiteSur-cursors	dist	.local/share/icons/WhiteSur-cursors
-ClearClock	plasmoid	https://github.com/qewer33/ClearClock	package	
-KVitals	plasmoid	https://github.com/yassine20011/kvitals	.	
-PlasMusic Toolbar	plasmoid	https://github.com/ccatterina/plasmusic-toolbar	src	
-Nothing Media	plasmoid	https://github.com/jaxparrow07/nothing-kde-widgets	packages/media	
-Panel Colorizer	plasmoid	https://github.com/luisbocanegra/plasma-panel-colorizer	package	
-Audio Visualizer	plasmoid	https://github.com/luisbocanegra/plasma-audio-visualizer	package	
+Layan Plasma theme	dir	https://github.com/vinceliuice/Layan-kde	a0b6a4956022276aee33309b2e07d1d0ef3db30c	plasma/desktoptheme/Layan	.local/share/plasma/desktoptheme/Layan
+Layan Plasma theme shared files	dir	https://github.com/vinceliuice/Layan-kde	a0b6a4956022276aee33309b2e07d1d0ef3db30c	plasma/desktoptheme/common	.local/share/plasma/desktoptheme/Layan
+Layan window decoration	dir	https://github.com/vinceliuice/Layan-kde	a0b6a4956022276aee33309b2e07d1d0ef3db30c	aurorae/themes/Layan	.local/share/aurorae/themes/Layan
+Layan colors	dir	https://github.com/vinceliuice/Layan-kde	a0b6a4956022276aee33309b2e07d1d0ef3db30c	color-schemes	.local/share/color-schemes
+YAMIS icons	dir	https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set	4428291a88534d6d603fb553efc8b715a865aa26	.	.local/share/icons/YAMIS
+WhiteSur cursors	dir	https://github.com/vinceliuice/WhiteSur-cursors	e190baf618ed95ee217d2fd45589bd309b37672b	dist	.local/share/icons/WhiteSur-cursors
+ClearClock	plasmoid	https://github.com/qewer33/ClearClock	fd9e4795d24ab80c45846a634c3c844850674c51	package	
+KVitals	plasmoid	https://github.com/yassine20011/kvitals	e2b672eaf9774611ac869017ff05e9bbff5d889f	.	
+PlasMusic Toolbar	plasmoid	https://github.com/ccatterina/plasmusic-toolbar	0e78da10095e5a9089494cd874129ee5062a5a8d	src	
+Nothing Media	plasmoid	https://github.com/jaxparrow07/nothing-kde-widgets	c963a5d89917a94233dc178fe0e655a6c8f0ff45	packages/media	
+Panel Colorizer	plasmoid	https://github.com/luisbocanegra/plasma-panel-colorizer	74390e013217cdcad1bca55f01fec197a6584698	package	
+Audio Visualizer	plasmoid	https://github.com/luisbocanegra/plasma-audio-visualizer	883cdbcf594f433009066ad577c21a5bd49589d4	package	
