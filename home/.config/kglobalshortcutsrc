@@ -294,6 +294,7 @@ activate widget 181=Alt+F1,none,Activate Application Launcher Widget
 activate widget 504=Alt+F1,none,Activate Application Launcher Widget
 activate widget 654=Alt+F1,none,Activate Application Launcher Widget
 activate widget 803=Meta+Shift+V,none,Activate KVitals Widget
+activate widget 824=none,none,Activate Discord Voice Widget
 clear history=none,none,Clear Notification History
 clear-history=none,none,Clear Clipboard History
 clipboard_action=none,none,Toggle Automatic Popping Up of Action Menu
