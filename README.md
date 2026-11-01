@@ -84,6 +84,7 @@ More help is in [troubleshooting](docs/troubleshooting.md).
 ## Discord voice widget
 
 A desktop widget shows the voice channel you're in, who's there, who's speaking, and who's muted, without opening Discord.
+You can mute, deafen and leave from it, and click a person to change their volume or mute them for you.
 `--themes` installs the widget. To connect it, run this and follow the prompts. It asks for a free Discord app of your own:
 
 ```bash

@@ -9,6 +9,7 @@ import sys
 import tempfile
 import threading
 import time
+import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
@@ -32,6 +33,7 @@ class FakeDiscord:
         self.server.bind(str(path))
         self.server.listen(1)
         self.subscribed = threading.Event()
+        self.calls = []
         self.conn = None
         threading.Thread(target=self.run, daemon=True).start()
 
@@ -54,6 +56,11 @@ class FakeDiscord:
         self.send({"cmd": "DISPATCH", "evt": "READY", "data": {"v": 1}})
         while (message := self.read()) is not None:
             data = {}
+            self.calls.append(message)
+            if message["cmd"] == "AUTHENTICATE":
+                data = {"user": {"id": "100"}}
+            if message["cmd"] == "GET_VOICE_SETTINGS":
+                data = {"mute": False, "deaf": False}
             if message["cmd"] == "AUTHORIZE":
                 self.prompts += 1
                 # The real client refuses a redirect_uri in this flow.
@@ -76,6 +83,18 @@ class FakeDiscord:
 def state():
     with urllib.request.urlopen(f"http://127.0.0.1:{PORT}/state", timeout=2) as response:
         return json.load(response)
+
+
+def post(action, header=True):
+    headers = {"Content-Type": "application/json"}
+    if header:
+        headers["X-Voice-Widget"] = "1"
+    request = urllib.request.Request(f"http://127.0.0.1:{PORT}/action", json.dumps(action).encode(), headers)
+    try:
+        with urllib.request.urlopen(request, timeout=2) as response:
+            return response.status
+    except urllib.error.HTTPError as error:
+        return error.code
 
 
 def wait_for(condition):
@@ -149,6 +168,40 @@ def main():
             assert found["channel"] == "lobby" and found["guild"] == "The Server", found
             assert [user["name"] for user in found["users"]] == ["Ada"], found
             assert discord.subscribed.wait(5)
+            assert found["users"][0]["self"], found
+
+            # A waiting request answers as soon as something changes.
+            result = {}
+            version = state()["version"]
+
+            def long_poll():
+                url = f"http://127.0.0.1:{PORT}/state?since={version}"
+                with urllib.request.urlopen(url, timeout=10) as response:
+                    result.update(json.load(response), at=time.time())
+
+            waiter = threading.Thread(target=long_poll)
+            waiter.start()
+            time.sleep(0.5)
+            assert not result, "must wait for a change"
+            sent = time.time()
+            discord.event("SPEAKING_START", {"user_id": "100", "channel_id": "1"})
+            waiter.join(3)
+            assert result["users"][0]["speaking"] and result["at"] - sent < 0.3, result
+            discord.event("SPEAKING_STOP", {"user_id": "100", "channel_id": "1"})
+            wait_for(lambda s: not s["users"][0]["speaking"])
+
+            # Controls reach Discord, and only from the widget.
+            assert post({"action": "leave"}, header=False) == 403
+            assert post({"action": "toggle-mute"}) == 200
+            deadline = time.time() + 3
+            while time.time() < deadline and not any(c["cmd"] == "SET_VOICE_SETTINGS" for c in discord.calls):
+                time.sleep(0.05)
+            assert [c["args"] for c in discord.calls if c["cmd"] == "SET_VOICE_SETTINGS"] == [{"mute": True}]
+            assert not any(c["cmd"] == "SELECT_VOICE_CHANNEL" for c in discord.calls)
+            discord.event("VOICE_SETTINGS_UPDATE", {"mute": True, "deaf": False})
+            wait_for(lambda s: s["selfMuted"])
+            post({"action": "user-volume", "user_id": "100", "volume": 150})
+            wait_for(lambda s: s["users"][0]["volume"] == 150)
 
             discord.event("VOICE_STATE_CREATE", voice("200", "Grace", muted=True))
             found = wait_for(lambda s: len(s["users"]) == 2)
