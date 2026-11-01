@@ -15,11 +15,10 @@ NightTemperature=4100
 blurEnabled=true
 eyeonscreenEnabled=true
 kwin4_effect_geometry_changeEnabled=true
-magiclampEnabled=true
-squashEnabled=false
+magiclampEnabled=false
 translucencyEnabled=true
 windowapertureEnabled=false
-wobblywindowsEnabled=true
+wobblywindowsEnabled=false
 
 [TabBox]
 LayoutName=big_icons
