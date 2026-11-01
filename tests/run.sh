@@ -25,7 +25,7 @@ fake() { printf '#!/usr/bin/env bash\n%s\n' "$2" > "$bin/$1"; chmod +x "$bin/$1"
 fake lspci 'cat "$DOTFILES_SYSROOT/lspci"'
 fake pacman 'if [ "$1" = -Slq ]; then cat "$DOTFILES_SYSROOT/repo"; else echo "pacman $*" >> "$DOTFILES_SYSROOT/log"; fi'
 fake sudo '"$@"'
-fake fc-list 'true'
+fake fc-list 'if [ -n "${HELVETICA:-}" ]; then echo Helvetica; seq 100000; fi'
 fake kquitapp6 'echo quit >> "$DOTFILES_SYSROOT/log"'
 fake kstart 'echo start >> "$DOTFILES_SYSROOT/log"'
 fake qdbus6 'echo test-activity'
@@ -110,6 +110,10 @@ check "--only copies the chosen part" test -f "$home/.config/fish/config.fish"
 check "--only leaves other parts" test ! -e "$home/.config/kglobalshortcutsrc"
 check "unknown part is rejected" bash -c "! yes | env HOME='$home' DOTFILES_SYSROOT='$work/other' PATH='$bin:$PATH' '$repo/install.sh' --only nope"
 check "default apps are never replaced" test ! -e "$repo/home/.config/mimeapps.list"
+
+# An early match in a long font list must still count as installed
+HELVETICA=1 on nvidia --only desktop >/dev/null 2>&1
+check "installed Helvetica is kept" grep -q Helvetica "$work/nvidia/home/.config/kdeglobals"
 
 # Backups and undo
 home="$work/amd/home"
