@@ -12,7 +12,8 @@ only=""
 do_packages=0 do_themes=0 do_dotfiles=0 do_plasma=0 do_hardware=0 do_detect=0 do_undo=0
 components="shell terminal editors audio desktop shortcuts"
 required_widgets="com.jaxparrow07.nothingkdewidgets.media luisbocanegra.audio.visualizer
-luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals plasmusic-toolbar"
+luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals org.kde.screentide.widget
+plasmusic-toolbar"
 # Let the tests stand in for the system and the theme list. Unset on real runs.
 sysroot="${DOTFILES_SYSROOT:-}"
 sources="${DOTFILES_SOURCES:-$repo/themes/sources.tsv}"

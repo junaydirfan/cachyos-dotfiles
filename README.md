@@ -81,6 +81,27 @@ For example, to copy just the terminal and shell configs:
 
 More help is in [troubleshooting](docs/troubleshooting.md).
 
+## Keeping the repo up to date
+
+To capture this PC's settings and push them now:
+
+```bash
+scripts/sync-to-github.sh
+```
+
+To do that daily, or to stop:
+
+```bash
+scripts/sync-to-github.sh --install
+```
+
+```bash
+scripts/sync-to-github.sh --remove
+```
+
+A sync stops and shows a notification if the secret check fails, the repo has uncommitted changes, or GitHub can't be
+reached. Nothing is committed in the first two cases.
+
 ## Credits
 
 Themes and widgets belong to their authors and keep their own licenses:
@@ -89,7 +110,7 @@ Themes and widgets belong to their authors and keep their own licenses:
 - Wallpapers are photos from [Pexels](https://www.pexels.com/license/) by Sonny and Seven Storm Photography, and aren't covered by this repo's MIT license
 - [YAMIS](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) by dirn
 - [ClearClock](https://github.com/qewer33/ClearClock), [KVitals](https://github.com/yassine20011/kvitals),
-  [PlasMusic Toolbar](https://github.com/ccatterina/plasmusic-toolbar), [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),
+  [Screentide](https://github.com/Agarwalpratyaksh/Screentide), [PlasMusic Toolbar](https://github.com/ccatterina/plasmusic-toolbar), [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),
   [Panel Colorizer](https://github.com/luisbocanegra/plasma-panel-colorizer) and [Plasma Audio Visualizer](https://github.com/luisbocanegra/plasma-audio-visualizer)
 
 My own files are under the [MIT License](LICENSE).
