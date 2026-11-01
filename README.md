@@ -151,7 +151,7 @@ For example, to copy only the terminal and shell configs:
 widgets/discord-voice/setup.sh
 ```
 
-You'll create a free Discord app of your own, which takes a couple of minutes:
+You'll need to create a free Discord app of your own, which takes a few minutes:
 
 1. Open the [Discord developer portal](https://discord.com/developers/applications) and choose **New Application**.
 2. Under **OAuth2**, copy the Client ID, then reset to get a Client Secret.
