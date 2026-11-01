@@ -9,7 +9,9 @@ set -euo pipefail
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 units="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
 name=cachyos-dotfiles-sync
-paths=(home plasma wallpapers)
+paths=(home plasma wallpapers icons)
+# More deleted files than this means a broken capture, not a settings change.
+max_deleted=10
 
 # Runs unattended, so failures have to reach the desktop as well as the journal.
 stop() {
@@ -58,18 +60,31 @@ case "${1:-}" in
     *) sed -n '2,6p' "$0" >&2; exit 1 ;;
 esac
 
+# Puts the repo back so one bad capture can't block every later sync. Safe because
+# the tree was clean before the capture.
+roll_back() {
+    git reset -q --hard
+    git clean -fdq -- "${paths[@]}"
+    stop "$1"
+}
+
+# A manual run and the timer must not capture over each other.
+exec 9> "${XDG_RUNTIME_DIR:-/tmp}/$name.lock"
+flock -n 9 || exit 0
+
 cd "$repo"
 [ "$(git branch --show-current)" = main ] || stop "the repo isn't on main"
 # Unfinished work must never be swept into an automatic commit.
 [ -z "$(git status --porcelain)" ] || stop "the repo has uncommitted changes"
 git pull -q --ff-only || stop "couldn't update from GitHub"
 
-scripts/sync-from-system.sh >/dev/null || stop "couldn't capture the settings"
-if ! scripts/check-secrets.sh; then
-    # Safe because the tree was clean before the capture.
-    git reset -q --hard
-    git clean -fdq -- "${paths[@]}"
-    stop "the secret check failed, so nothing was committed"
+scripts/sync-from-system.sh >/dev/null || roll_back "couldn't capture the settings"
+if ! scripts/check-secrets.sh >/dev/null; then
+    roll_back "the secret check failed, so nothing was committed"
+fi
+deleted="$(git ls-files --deleted -- "${paths[@]}" | wc -l)"
+if [ "$deleted" -gt "$max_deleted" ]; then
+    roll_back "the capture removed $deleted files, so nothing was committed"
 fi
 
 git add -- "${paths[@]}"
