@@ -16,7 +16,7 @@
 
 ## Screenshots
 
-<img src="docs/screenshots/desktop-preview.png" alt="The full desktop, with the floating dock, large clock, audio visualizer, Control Station and Discord voice widget over a black and white wallpaper" width="100%">
+<img src="docs/screenshots/desktop-pre.png" alt="The full desktop, with the floating dock, large clock, audio visualizer, Control Station and Discord voice widget over a black and white wallpaper" width="100%">
 
 <sub>The full desktop, with personal details blurred.</sub>
 
