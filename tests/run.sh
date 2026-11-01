@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# Runs the installer against simulated PCs. Needs no network and touches nothing real.
+set -uo pipefail
+
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+work="$(mktemp -d)"
+bin="$work/bin"
+passed=0 failed=0
+mkdir -p "$bin"
+
+check() {
+    # check <description> <command...>
+    local name="$1"
+    shift
+    if "$@" >/dev/null 2>&1; then
+        passed=$((passed + 1))
+    else
+        failed=$((failed + 1))
+        echo "FAIL: $name"
+    fi
+}
+
+# shellcheck disable=SC2016
+fake() { printf '#!/usr/bin/env bash\n%s\n' "$2" > "$bin/$1"; chmod +x "$bin/$1"; }
+fake lspci 'cat "$DOTFILES_SYSROOT/lspci"'
+fake pacman 'if [ "$1" = -Slq ]; then cat "$DOTFILES_SYSROOT/repo"; else echo "pacman $*" >> "$DOTFILES_SYSROOT/log"; fi'
+fake sudo '"$@"'
+fake fc-list 'true'
+fake kquitapp6 'echo quit >> "$DOTFILES_SYSROOT/log"'
+fake kstart 'echo start >> "$DOTFILES_SYSROOT/log"'
+fake qdbus6 'echo test-activity'
+fake kpackagetool6 'echo "kpackagetool6 $*" >> "$DOTFILES_SYSROOT/log"
+if [ "$3" = -i ]; then mkdir -p "$HOME/.local/share/plasma/plasmoids/$(basename "$4")"; fi'
+
+pc() {
+    # pc <name> <cpu vendor> <chassis> <product> <monitors> <gpu lines>
+    local root="$work/$1" i
+    mkdir -p "$root"/{etc,proc,home,sys/class/dmi/id,sys/bus/usb/devices/1-1,usr/share/applications}
+    touch "$root/etc/arch-release"
+    echo "vendor_id : $2" > "$root/proc/cpuinfo"
+    echo "$3" > "$root/sys/class/dmi/id/chassis_type"
+    echo "$4" > "$root/sys/class/dmi/id/product_version"
+    for ((i = 1; i <= $5; i++)); do
+        mkdir -p "$root/sys/class/drm/card0-DP-$i"
+        echo connected > "$root/sys/class/drm/card0-DP-$i/status"
+    done
+    printf '%b' "$6" > "$root/lspci"
+    cat "$repo"/packages/*.txt > "$root/repo"
+    touch "$root/log"
+}
+
+on() {
+    # on <pc> <installer args...>: runs with answers from $ANSWERS, default yes
+    local root="$work/$1"
+    shift
+    yes "${ANSWERS:-y}" | env HOME="$root/home" DOTFILES_SYSROOT="$root" DOTFILES_SOURCES="$work/sources.tsv" \
+        PATH="$bin:$PATH" KDE_SESSION_VERSION=6 "$repo/install.sh" "$@"
+}
+
+has() { grep -qF -- "$2" "$work/$1/log"; }
+lacks() { ! has "$@"; }
+output_has() { printf '%s' "$1" | grep -qF -- "$2"; }
+
+amd='03:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. [AMD/ATI] Navi 22\n'
+intel='00:02.0 VGA compatible controller [0300]: Intel Corporation Alder Lake\n'
+nvidia='01:00.0 VGA compatible controller [0300]: NVIDIA Corporation TU106\n'
+pc amd AuthenticAMD 3 MS-7D25 1 "$amd"
+pc intel GenuineIntel 10 ThinkPad 1 "$intel"
+pc nvidia GenuineIntel 3 Z790 2 "$nvidia"
+pc legion GenuineIntel 10 "Legion Pro 7" 3 "$intel$nvidia"
+pc other AuthenticAMD 3 B650 1 "$amd"
+pc broken AuthenticAMD 3 B650 1 "$amd"
+
+# A local stand-in for an upstream theme, with a symlink like real icon themes.
+upstream="$work/upstream"
+mkdir -p "$upstream/icons/sub" "$upstream/widget"
+echo icon > "$upstream/icons/sub/a.svg"
+ln -s a.svg "$upstream/icons/sub/b.svg"
+printf '{ "KPlugin": {\n  "Id": "test.widget"\n} }\n' > "$upstream/widget/metadata.json"
+git -C "$upstream" init -q
+git -C "$upstream" add -A
+git -C "$upstream" -c user.name=t -c user.email=t@t commit -qm init
+commit="$(git -C "$upstream" rev-parse HEAD)"
+printf 'Icons\tdir\t%s\t%s\ticons\t.local/share/icons/Test\n' "$upstream" "$commit" > "$work/sources.tsv"
+printf 'Widget\tplasmoid\t%s\t%s\twidget\t\n' "$upstream" "$commit" >> "$work/sources.tsv"
+
+# Hardware offers
+on amd --hardware >/dev/null 2>&1
+check "AMD gets AMD packages" has amd vulkan-radeon
+check "AMD skips NVIDIA packages" lacks amd nvidia-settings
+check "AMD skips Legion packages" lacks amd lenovolegionlinux
+on intel --hardware >/dev/null 2>&1
+check "single-GPU laptop skips dual-GPU tools" lacks intel nvidia-prime
+on legion --hardware >/dev/null 2>&1
+check "Legion gets Legion packages" has legion lenovolegionlinux
+check "hybrid laptop gets dual-GPU tools" has legion nvidia-prime
+out="$(on nvidia --hardware 2>&1)"
+check "NVIDIA without a driver gets the chwd hint" output_has "$out" "chwd -a"
+
+# Packages missing from the repos are skipped, not fatal
+sed -i '/^vulkan-radeon$/d' "$work/other/repo"
+on other --hardware >/dev/null 2>&1
+check "unavailable package is skipped" lacks other " vulkan-radeon"
+check "rest of the group still installs" has other lact
+
+# Partial configs
+home="$work/other/home"
+on other --only shell >/dev/null 2>&1
+check "--only copies the chosen part" test -f "$home/.config/fish/config.fish"
+check "--only leaves other parts" test ! -e "$home/.config/kglobalshortcutsrc"
+check "unknown part is rejected" bash -c "! yes | env HOME='$home' DOTFILES_SYSROOT='$work/other' PATH='$bin:$PATH' '$repo/install.sh' --only nope"
+check "default apps are never replaced" test ! -e "$repo/home/.config/mimeapps.list"
+
+# Backups and undo
+home="$work/amd/home"
+mkdir -p "$home/.config/fish"
+echo mine > "$home/.config/fish/config.fish"
+on amd --only all >/dev/null 2>&1
+check "configs are copied" test -f "$home/.config/kwinrc"
+check "missing Helvetica falls back" bash -c "! grep -q Helvetica '$home/.config/kdeglobals'"
+out="$(on amd --only all 2>&1)"
+check "second run changes nothing" bash -c "! printf '%s' '$out' | grep -q 'Changed'"
+on amd --undo >/dev/null 2>&1
+check "undo restores the original" grep -qx mine "$home/.config/fish/config.fish"
+check "undo removes new files" test ! -e "$home/.config/kwinrc"
+
+# Themes
+home="$work/intel/home"
+on intel --themes >/dev/null 2>&1
+check "theme files are installed" test -f "$home/.local/share/icons/Test/sub/a.svg"
+check "symlinks stay symlinks" test -L "$home/.local/share/icons/Test/sub/b.svg"
+check "widget is installed" has intel "-i"
+on intel --undo >/dev/null 2>&1
+check "undo removes theme files" test ! -e "$home/.local/share/icons/Test/sub/a.svg"
+check "undo removes the widget" has intel "-r test.widget"
+
+printf 'Good\tdir\t%s\t%s\ticons\t.local/share/icons/Good\n' "$upstream" "$commit" > "$work/good.tsv"
+{ printf 'Bad\tdir\t%s/missing\t%s\ticons\t.local/share/icons/Bad\n' "$upstream" "$commit"; cat "$work/good.tsv"; } > "$work/sources.tsv"
+on broken --themes >/dev/null 2>&1
+status=$?
+check "a failed download is reported" test "$status" -eq 1
+check "later themes still install" test -f "$work/broken/home/.local/share/icons/Good/sub/a.svg"
+
+# Panel layout
+for pc_name in amd legion; do on "$pc_name" --plasma >/dev/null 2>&1; done
+file=".config/plasma-org.kde.plasma.desktop-appletsrc"
+panel_screen() { awk '/^\[Containments\]\[778\]$/{on=1;next} /^\[/{on=0} on&&/^lastScreen=/{print substr($0,12)}' "$1"; }
+check "one monitor: dock on the main screen" test "$(panel_screen "$work/amd/home/$file")" = 0
+check "three monitors: dock on the middle screen" test "$(panel_screen "$work/legion/home/$file")" = 1
+check "placeholders are filled in" bash -c "! grep -q '@HOME@\|@ACTIVITY@\|@ONE@' '$work/amd/home/$file'"
+check "shortcuts for missing apps are dropped" bash -c "! grep -q 'com.spotify.Client' '$work/amd/home/$file'"
+check "the file manager shortcut stays" grep -q 'preferred://filemanager' "$work/amd/home/$file"
+check "Plasma is restarted" has amd start
+: > "$work/amd/log"
+on amd --undo >/dev/null 2>&1
+check "undo stops Plasma before restoring the layout" has amd quit
+check "undo restores the layout" test ! -e "$work/amd/home/$file"
+check "undo restarts Plasma" has amd start
+
+before="$(find "$work/legion/home" -type f | wc -l)"
+on legion --all --hardware --dry-run >/dev/null 2>&1
+check "dry run writes nothing" test "$(find "$work/legion/home" -type f | wc -l)" -eq "$before"
+
+echo "$passed passed, $failed failed"
+[ "$failed" -eq 0 ]

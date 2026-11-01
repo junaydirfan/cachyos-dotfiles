@@ -27,7 +27,7 @@ rm -rf "$dest"
 mkdir -p "$dest"
 
 for f in kwinrc kwinrulesrc kglobalshortcutsrc kdeglobals kcminputrc plasmarc \
-    dolphinrc konsolerc mimeapps.list; do
+    dolphinrc konsolerc; do
     copy ".config/$f"
 done
 copy .config/fontconfig/fonts.conf
@@ -42,6 +42,10 @@ copy .config/zed/settings.json
 copy .config/micro/settings.json
 copy .config/cava/themes
 copy .config/cava/shaders
+
+# Only CachyOS ships this file, so don't fail without it.
+sed -i -E 's#^source (/usr/share/cachyos-fish-config/.*)$#test -f \1; and source \1#' \
+    "$dest/.config/fish/config.fish"
 
 # Desktop IDs and tiling layouts are per-machine UUIDs.
 drop_section '[Tiling]' "$dest/.config/kwinrc"

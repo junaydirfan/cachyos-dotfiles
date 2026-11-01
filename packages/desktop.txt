@@ -9,9 +9,9 @@ gwenview
 haruna
 kate
 kcalc
-kde-gtk-config
 kdeconnect
 kdegraphics-thumbnailers
+kde-gtk-config
 kdeplasma-addons
 kdialog
 kinfocenter
@@ -19,6 +19,7 @@ kio-admin
 konsole
 kscreen
 kwalletmanager
+noto-fonts
 plasma-browser-integration
 plasma-desktop
 plasma-firewall
