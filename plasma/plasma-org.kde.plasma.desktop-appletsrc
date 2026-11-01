@@ -32,8 +32,8 @@ Image=file://@HOME@/.local/share/wallpapers/cachyos-dotfiles/pexels-sonny-109605
 SlidePaths=@HOME@/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][651]
-ItemGeometries-1920x1080=Applet-804:0,256,1920,192,0;Applet-816:976,0,64,64,0;Applet-803:1392,448,496,64,0;Applet-814:1440,48,448,208,0;Applet-824:1472,512,384,208,0;Applet-823:1504,720,288,272,0;
-ItemGeometriesHorizontal=Applet-804:0,256,1920,192,0;Applet-816:976,0,64,64,0;Applet-803:1392,448,496,64,0;Applet-814:1440,48,448,208,0;Applet-824:1472,512,384,208,0;Applet-823:1504,720,288,272,0;
+ItemGeometries-1920x1080=Applet-804:0,256,1920,192,0;Applet-803:1392,448,496,64,0;Applet-814:1440,48,448,208,0;Applet-824:1408,512,480,208,0;Applet-823:1504,720,288,272,0;
+ItemGeometriesHorizontal=Applet-804:0,256,1920,192,0;Applet-803:1392,448,496,64,0;Applet-814:1440,48,448,208,0;Applet-824:1408,512,480,208,0;Applet-823:1504,720,288,272,0;
 activityId=@ACTIVITY@
 formfactor=0
 immutability=1
@@ -114,17 +114,6 @@ dayShadowYOffset=5
 [Containments][651][Applets][814][Configuration][ConfigDialog]
 DialogHeight=630
 DialogWidth=810
-
-[Containments][651][Applets][816]
-immutability=1
-plugin=org.kde.plasma.kickerdash
-
-[Containments][651][Applets][816][Configuration][ConfigDialog]
-DialogHeight=630
-DialogWidth=810
-
-[Containments][651][Applets][816][Configuration][General]
-favoritesPortedToKAstats=true
 
 [Containments][651][Applets][823]
 immutability=1
