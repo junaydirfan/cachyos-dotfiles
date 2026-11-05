@@ -16,7 +16,7 @@
 
 ## Screenshots
 
-<img src="docs/screenshots/desktop-pr.png" alt="The full desktop, with the floating dock, large clock, audio visualizer, Control Station and Discord voice widget over a black and white wallpaper" width="100%">
+<img src="docs/screenshots/desktop-pr.png" alt="The full desktop, with the floating dock, the open Nothing island, large clock, audio visualizer, weather and Discord voice widgets over a black and white wallpaper" width="100%">
 
 <sub>The full desktop, with personal details blurred.</sub>
 
@@ -52,8 +52,7 @@
 | --- | --- |
 | **Look** | [Layan](https://github.com/vinceliuice/Layan-kde) theme and window frames, [YAMIS](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) monochrome icons, [WhiteSur](https://github.com/vinceliuice/WhiteSur-cursors) cursors |
 | **Dock** | A floating, near-black dock with blur, built with [Panel Colorizer](https://github.com/luisbocanegra/plasma-panel-colorizer) |
-| **Control center** | [KDE Control Station](https://github.com/EliverLara/kde-control-station) for Wi-Fi, volume, brightness and media, opened from the dock or with `Meta+Alt+C` |
-| **Desktop widgets** | Clock, audio visualizer, system stats, media player and Discord voice |
+| **Desktop widgets** | Clock, weather, audio visualizer, system stats, media player and Discord voice |
 | **Apps and tools** | fish, Alacritty, Konsole, fastfetch, cava, Zed, micro and Dolphin, all configured |
 | **Packages** | Optional groups for desktop, apps, development and gaming, plus GPU and device extras that match your PC |
 
@@ -213,11 +212,10 @@ in `icons/`.
 
 Themes and widgets belong to their authors and keep their own licenses:
 
-- [Layan](https://github.com/vinceliuice/Layan-kde) and [WhiteSur cursors](https://github.com/vinceliuice/WhiteSur-cursors) by vinceliuice
+- [Layan](https://github.com/vinceliuice/Layan-kde) and [WhiteSur cursors](https://github.com/vinceliuice/WhiteSur-cursors) by vinceliuice. The installer makes the line Layan draws on the panel under an open widget white instead of blue
 - [YAMIS](https://bitbucket.org/dirn-typo/yet-another-monochrome-icon-set) by dirn
-- [KDE Control Station](https://github.com/EliverLara/kde-control-station) by Eliver Lara, GPLv3. The installer changes one line so it opens on Plasma 6.8
 - [ClearClock](https://github.com/qewer33/ClearClock), [KVitals](https://github.com/yassine20011/kvitals),
-  [PlasMusic Toolbar](https://github.com/ccatterina/plasmusic-toolbar), [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),
+  [Nothing KDE Widgets](https://github.com/jaxparrow07/nothing-kde-widgets),
   [Panel Colorizer](https://github.com/luisbocanegra/plasma-panel-colorizer) and [Plasma Audio Visualizer](https://github.com/luisbocanegra/plasma-audio-visualizer)
 - Wallpapers are photos from [Pexels](https://www.pexels.com/license/) by Sonny and Seven Storm Photography, and aren't covered by this repo's MIT license
 

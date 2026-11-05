@@ -78,12 +78,15 @@ mkdir -p "$upstream/icons/sub" "$upstream/widget"
 echo icon > "$upstream/icons/sub/a.svg"
 ln -s a.svg "$upstream/icons/sub/b.svg"
 printf '{ "KPlugin": {\n  "Id": "test.widget"\n} }\n' > "$upstream/widget/metadata.json"
+mkdir -p "$upstream/theme/widgets"
+printf '<rect class="ColorScheme-ButtonFocus" />\n' | gzip > "$upstream/theme/widgets/tabbar.svgz"
 git -C "$upstream" init -q
 git -C "$upstream" add -A
 git -C "$upstream" -c user.name=t -c user.email=t@t commit -qm init
 commit="$(git -C "$upstream" rev-parse HEAD)"
 printf 'Icons\tdir\t%s\t%s\ticons\t.local/share/icons/Test\n' "$upstream" "$commit" > "$work/sources.tsv"
 printf 'Widget\tplasmoid\t%s\t%s\twidget\t\n' "$upstream" "$commit" >> "$work/sources.tsv"
+printf 'Theme\tdir\t%s\t%s\ttheme\t.local/share/plasma/desktoptheme/Test\n' "$upstream" "$commit" >> "$work/sources.tsv"
 
 # Hardware offers
 on amd --hardware >/dev/null 2>&1
@@ -149,9 +152,16 @@ on intel --themes >/dev/null 2>&1
 check "theme files are installed" test -f "$home/.local/share/icons/Test/sub/a.svg"
 check "symlinks stay symlinks" test -L "$home/.local/share/icons/Test/sub/b.svg"
 check "widget is installed" has intel "-i"
+tabbar="$home/.local/share/plasma/desktoptheme/Test/widgets/tabbar.svgz"
+check "the open widget line uses the text colour" bash -c "gzip -dc '$tabbar' | grep -q ColorScheme-Text"
+check "the open widget line isn't the accent colour" bash -c "! gzip -dc '$tabbar' | grep -q ColorScheme-ButtonFocus"
 on intel --undo >/dev/null 2>&1
 check "undo removes theme files" test ! -e "$home/.local/share/icons/Test/sub/a.svg"
+check "undo removes the changed theme" test ! -e "$tabbar"
 check "undo removes the widget" has intel "-r test.widget"
+on intel --themes >/dev/null 2>&1
+out="$(on intel --themes 2>&1)"
+check "second theme run changes nothing" bash -c "! printf '%s' \"\$1\" | grep -q Changed" _ "$out"
 
 printf 'Good\tdir\t%s\t%s\ticons\t.local/share/icons/Good\n' "$upstream" "$commit" > "$work/good.tsv"
 { printf 'Bad\tdir\t%s/missing\t%s\ticons\t.local/share/icons/Bad\n' "$upstream" "$commit"; cat "$work/good.tsv"; } > "$work/sources.tsv"
@@ -185,13 +195,6 @@ check "undo stops Plasma before restoring the layout" has amd quit
 check "undo restores the layout" test ! -e "$work/amd/home/$file"
 check "undo restarts Plasma" has amd start
 check "undo removes the wallpapers" test ! -e "$work/amd/home/.local/share/wallpapers/cachyos-dotfiles"
-
-# Control Station's startup fix
-mkdir -p "$work/nvidia/home/.local/share/plasma/plasmoids/KdeControlStation/contents/ui"
-station="$work/nvidia/home/.local/share/plasma/plasmoids/KdeControlStation/contents/ui/main.qml"
-printf '    property int plasmaVersion\n' > "$station"
-on nvidia --themes >/dev/null 2>&1
-check "Control Station knows the Plasma version at startup" grep -q 'plasmaVersion: 8' "$station"
 
 # Discord voice
 check "the voice bridge follows a call" python3 -I "$repo/tests/discord_voice_test.py"
