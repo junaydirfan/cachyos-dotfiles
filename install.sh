@@ -11,9 +11,9 @@ failures=()
 only=""
 do_packages=0 do_themes=0 do_dotfiles=0 do_plasma=0 do_hardware=0 do_detect=0 do_undo=0
 components="shell terminal editors audio desktop shortcuts"
-required_widgets="com.jaxparrow07.nothingkdewidgets.media luisbocanegra.audio.visualizer
-luisbocanegra.panel.colorizer org.kde.plasma.clearclock org.kde.plasma.kvitals plasmusic-toolbar
-org.cachyos.discordvoice KdeControlStation"
+required_widgets="com.jaxparrow07.nothingkdewidgets.media com.jaxparrow07.nothingkdewidgets.weather
+luisbocanegra.audio.visualizer luisbocanegra.panel.colorizer org.kde.plasma.clearclock
+org.kde.plasma.kvitals org.cachyos.discordvoice"
 # Let the tests stand in for the system and the theme list. Unset on real runs.
 sysroot="${DOTFILES_SYSROOT:-}"
 sources="${DOTFILES_SOURCES:-$repo/themes/sources.tsv}"
@@ -217,12 +217,14 @@ install_widget() {
     fi
 }
 
-# Control Station learns the Plasma version only after its pages have loaded, so it
-# picks controls that no longer exist and its panel never opens.
-fix_control_station() {
-    local main="$HOME/.local/share/plasma/plasmoids/KdeControlStation/contents/ui/main.qml"
-    [ -f "$main" ] || return 0
-    run sed -i 's/^    property int plasmaVersion$/    property int plasmaVersion: 8/' "$main"
+# Layan draws a blue line on the panel while a widget's popup is open. Use the text
+# colour instead, so it's white on a dark theme. Changes the download before it's
+# placed, so a second run and --undo treat it like any other theme file.
+whiten_open_widget_line() {
+    local svg="$1/widgets/tabbar.svgz"
+    [ -f "$svg" ] || return 0
+    gzip -dc "$svg" | sed 's/ColorScheme-ButtonFocus/ColorScheme-Text/g' | gzip -9n > "$svg.new" &&
+        mv "$svg.new" "$svg"
 }
 
 install_themes() {
@@ -242,6 +244,9 @@ install_themes() {
         fi
         case "$kind" in
             dir)
+                case "$target" in
+                    .local/share/plasma/desktoptheme/*) whiten_open_widget_line "$dir/$subpath" ;;
+                esac
                 while IFS= read -r -d '' file; do
                     place "$file" "$target/${file#"$dir/$subpath/"}"
                 done < <(cd "$dir" && find "$PWD/$subpath" -path '*/.git' -prune -o \( -type f -o -type l \) -print0 |
@@ -253,7 +258,6 @@ install_themes() {
             *) warn "unknown kind '$kind' for $name" ;;
         esac
     done 3< "$sources"
-    fix_control_station
     # Stored here rather than fetched. widgets/discord-voice/setup.sh connects it.
     say "Discord Voice"
     if [ "$dry_run" -eq 1 ]; then
