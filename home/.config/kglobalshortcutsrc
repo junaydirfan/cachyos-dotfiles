@@ -295,7 +295,6 @@ activate widget 504=Alt+F1,none,Activate Application Launcher Widget
 activate widget 654=Alt+F1,none,Activate Application Launcher Widget
 activate widget 803=Meta+Shift+V,none,Activate KVitals Widget
 activate widget 824=none,none,Activate Discord Voice Widget
-activate widget 827=Meta+Alt+C,none,Activate KDE control station Widget
 activate widget 902=Meta+Alt+C,none,Activate KDE control station Widget
 clear history=none,none,Clear Notification History
 clear-history=none,none,Clear Clipboard History
