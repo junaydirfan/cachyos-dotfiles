@@ -16,11 +16,11 @@
 
 ## Screenshots
 
-<img src="docs/screenshots/desktop-pre.png" alt="The full desktop, with the floating dock, large clock, audio visualizer, Control Station and Discord voice widget over a black and white wallpaper" width="100%">
+<img src="docs/screenshots/desktop.png" alt="The full desktop, with the floating dock, large clock, audio visualizer, Control Station and Discord voice widget over a black and white wallpaper" width="100%">
 
 <sub>The full desktop, with personal details blurred.</sub>
 
-<img src="docs/screenshots/start.png" width="100%">
+<img src="docs/screenshots/start-pre.png" width="100%">
 
 <table>
   <tr>
