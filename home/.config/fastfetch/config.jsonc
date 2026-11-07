@@ -3,41 +3,39 @@
   "logo": {
     "type": "file",
     "source": "~/.config/fastfetch/custom_logo.txt",
-    "color": {
-      "1": "white"
-    }
+    "color": { "1": "white" },
+    "padding": { "top": 2, "left": 2, "right": 6 }
   },
   "display": {
-    "color": "white"
+    "separator": " -> ",
+    "color": { "keys": "cyan", "title": "cyan" }
   },
   "modules": [
     "title",
-    "separator",
-    "os",
-    "host",
-    "kernel",
-    "uptime",
-    "packages",
-    "shell",
-    "display",
-    "de",
-    "wm",
-    "wmtheme",
-    "theme",
-    "icons",
-    "font",
-    "cursor",
-    "terminal",
-    "terminalfont",
-    "cpu",
-    "gpu",
-    "memory",
-    "swap",
-    "disk",
-    "battery",
-    "poweradapter",
-    "localip",
-    "locale",
+    { "type": "separator", "string": "─" },
+
+    { "type": "os", "key": " OS", "format": "{name}" },
+    { "type": "kernel", "key": "├─" },
+    { "type": "packages", "key": "├─󰏖" },
+    { "type": "shell", "key": "├─" },
+    { "type": "uptime", "key": "└─󰔟" },
     "break",
+
+    { "type": "de", "key": " DE/WM" },
+    { "type": "wm", "key": "├─" },
+    { "type": "wmtheme", "key": "├─󰉼" },
+    { "type": "icons", "key": "├─󰀻" },
+    { "type": "terminal", "key": "└─" },
+    "break",
+
+    { "type": "host", "key": "󰌢 PC" },
+    { "type": "cpu", "key": "├─" },
+    { "type": "gpu", "key": "├─󰢮" },
+    { "type": "display", "key": "├─󰍹" },
+    { "type": "disk", "key": "├─󰋊" },
+    { "type": "memory", "key": "└─" },
+    "break",
+
+    { "type": "colors", "symbol": "block", "paddingLeft": 0 }
   ]
 }
