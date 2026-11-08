@@ -3,8 +3,16 @@
   "logo": {
     "type": "file",
     "source": "~/.config/fastfetch/custom_logo.txt",
-    "color": { "1": "white" },
-    "padding": { "top": 2, "left": 2, "right": 6 }
+    "position": "top",
+    "color": {
+      "1": "38;2;0;230;255",
+      "2": "38;2;0;205;255",
+      "3": "38;2;0;180;255",
+      "4": "38;2;0;155;255",
+      "5": "38;2;20;125;255",
+      "6": "38;2;40;95;255"
+    },
+    "padding": { "top": 1, "left": 1, "right": 0 }
   },
   "display": {
     "separator": " -> ",
