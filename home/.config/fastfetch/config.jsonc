@@ -16,27 +16,28 @@
   },
   "display": {
     "separator": " -> ",
-    "color": { "keys": "cyan", "title": "cyan" }
+    "color": { "keys": "38;2;0;180;255", "title": "38;2;0;230;255", "separator": "38;2;40;95;255" },
+    "percent": { "color": { "green": "38;2;0;230;255" } }
   },
   "modules": [
     "title",
-    { "type": "separator", "string": "─" },
+    { "type": "separator", "string": "─", "outputColor": "38;2;40;95;255" },
 
-    { "type": "os", "key": " OS", "format": "{name}" },
+    { "type": "os", "key": " OS", "keyColor": "38;2;0;230;255", "format": "{name}" },
     { "type": "kernel", "key": "├─" },
     { "type": "packages", "key": "├─󰏖" },
     { "type": "shell", "key": "├─" },
     { "type": "uptime", "key": "└─󰔟" },
     "break",
 
-    { "type": "de", "key": " DE/WM" },
+    { "type": "de", "key": " DE/WM", "keyColor": "38;2;0;230;255" },
     { "type": "wm", "key": "├─" },
     { "type": "wmtheme", "key": "├─󰉼" },
     { "type": "icons", "key": "├─󰀻" },
     { "type": "terminal", "key": "└─" },
     "break",
 
-    { "type": "host", "key": "󰌢 PC" },
+    { "type": "host", "key": "󰌢 PC", "keyColor": "38;2;0;230;255" },
     { "type": "cpu", "key": "├─" },
     { "type": "gpu", "key": "├─󰢮" },
     { "type": "display", "key": "├─󰍹" },
@@ -44,6 +45,6 @@
     { "type": "memory", "key": "└─" },
     "break",
 
-    { "type": "colors", "symbol": "block", "paddingLeft": 0 }
+    { "type": "custom", "format": "{#38;2;0;230;255}████{#38;2;0;205;255}████{#38;2;0;180;255}████{#38;2;0;155;255}████{#38;2;20;125;255}████{#38;2;40;95;255}████" }
   ]
 }
