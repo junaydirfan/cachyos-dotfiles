@@ -1,7 +1,19 @@
+MenuBar=Disabled
+
+[Desktop Entry]
+DefaultProfile=Translucent.profile
+
 [General]
 ConfigVersion=1
 
+[MainWindow]
+MenuBar=Disabled
+ToolBarsMovable=Enabled
+
 [MainWindow][Toolbar mainToolBar]
+ToolButtonStyle=IconOnly
+
+[Toolbar mainToolBar]
 ToolButtonStyle=IconOnly
 
 [UiSettings]
