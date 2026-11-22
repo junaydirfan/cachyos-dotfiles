@@ -13,6 +13,9 @@ ToolBarsMovable=Enabled
 [MainWindow][Toolbar mainToolBar]
 ToolButtonStyle=IconOnly
 
+[Notification Messages]
+CloseSingleTab=true
+
 [Toolbar mainToolBar]
 ToolButtonStyle=IconOnly
 
